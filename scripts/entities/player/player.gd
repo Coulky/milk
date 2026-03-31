@@ -65,8 +65,7 @@ func add_weapon(weapon_id: String):
 		push_error("无法加载武器配置: " + weapon_id)
 		return
 	
-	var weapon_scene = preload("res://scripts/entities/weapons/weapon_base.gd")
-	var weapon = weapon_scene.new()
+	var weapon = WeaponBase.new()
 	weapon.setup(weapon_config, self)
 	weapons.append(weapon)
 	add_child(weapon)

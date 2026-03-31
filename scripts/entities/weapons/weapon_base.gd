@@ -1,4 +1,5 @@
-extends Node
+extends Node2D
+class_name WeaponBase
 
 var weapon_config: Dictionary = {}
 var owner_player: Node2D = null
@@ -84,6 +85,7 @@ func projectile_attack():
 			continue
 		
 		var projectile = create_projectile()
+		projectile.global_position = owner_player.global_position
 		projectile.setup(
 			current_damage + owner_player.get_attack_damage(),
 			projectile_speed,
