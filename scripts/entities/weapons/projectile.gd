@@ -10,10 +10,21 @@ var lifetime: float = 5.0
 
 var hit_enemies: Array = []
 
-@onready var sprite: Sprite2D = $Sprite2D
+var projectile_symbol: String = "•"
+var projectile_color: Color = Color.WHITE
+
+@onready var sprite: Label = $Label
 
 func _ready():
 	add_to_group("projectiles")
+	setup_visuals()
+
+func setup_visuals():
+	sprite.text = projectile_symbol
+	sprite.add_theme_color_override("font_color", projectile_color)
+	sprite.add_theme_font_size_override("font_size", 16)
+	sprite.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	sprite.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 
 func setup(dmg: int, spd: float, tgt, pierce: int, is_homing: bool):
 	damage = dmg
@@ -26,6 +37,8 @@ func setup(dmg: int, spd: float, tgt, pierce: int, is_homing: bool):
 	elif tgt is Node2D:
 		target = tgt
 		direction = (target.global_position - global_position).normalized()
+	
+	setup_visuals()
 	
 	var timer = Timer.new()
 	timer.wait_time = lifetime

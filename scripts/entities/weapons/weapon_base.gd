@@ -23,6 +23,9 @@ var area_bonus: float = 0.0
 
 var weapon_level: int = 1
 
+var weapon_symbol: String = ""
+var weapon_color: Color = Color.WHITE
+
 signal attack_performed
 
 func setup(config: Dictionary, owner: Node2D):
@@ -42,6 +45,27 @@ func setup(config: Dictionary, owner: Node2D):
 	homing = config.get("homing", false)
 	
 	cooldown = attack_speed
+	
+	setup_weapon_visuals()
+
+func setup_weapon_visuals():
+	weapon_symbol = weapon_config.get("symbol", "?")
+	weapon_color = Color(weapon_config.get("symbol_color", "#ffffff"))
+	
+	var sprite: Label
+	if has_node("WeaponSprite"):
+		sprite = $WeaponSprite
+	else:
+		sprite = Label.new()
+		sprite.name = "WeaponSprite"
+		sprite.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		sprite.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+		sprite.z_index = 1
+		add_child(sprite)
+	
+	sprite.text = weapon_symbol
+	sprite.add_theme_color_override("font_color", weapon_color)
+	sprite.add_theme_font_size_override("font_size", 24)
 
 func _process(delta):
 	if not GameManager.is_game_running or GameManager.is_paused:
@@ -86,6 +110,8 @@ func projectile_attack():
 		
 		var projectile = create_projectile()
 		projectile.global_position = owner_player.global_position
+		projectile.projectile_symbol = weapon_symbol
+		projectile.projectile_color = weapon_color
 		projectile.setup(
 			current_damage + owner_player.get_attack_damage(),
 			projectile_speed,

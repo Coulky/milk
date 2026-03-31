@@ -24,6 +24,7 @@ signal player_died
 @onready var hitbox: Area2D = $Hitbox
 @onready var pickup_area: Area2D = $PickupArea
 @onready var invincibility_timer: Timer = $InvincibilityTimer
+@onready var weapons_container: Node2D = $Weapons
 
 func _ready():
 	load_character_config()
@@ -68,7 +69,7 @@ func add_weapon(weapon_id: String):
 	var weapon = WeaponBase.new()
 	weapon.setup(weapon_config, self)
 	weapons.append(weapon)
-	add_child(weapon)
+	weapons_container.add_child(weapon)
 
 func add_passive_item(item_id: String):
 	var item_config = ConfigManager.get_passive_item(item_id)
