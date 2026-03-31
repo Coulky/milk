@@ -13,7 +13,8 @@
         "language": "语言:",
         "windowed": "窗口模式",
         "fullscreen": "全屏模式",
-        "apply": "应用"
+        "apply": "应用",
+        "close": "关闭"
       },
       "character_select": {
         "title": "选择角色",
@@ -64,7 +65,8 @@
         "language": "Language:",
         "windowed": "Windowed",
         "fullscreen": "Fullscreen",
-        "apply": "Apply"
+        "apply": "Apply",
+        "close": "Close"
       },
       "character_select": {
         "title": "Select Character",
@@ -115,7 +117,8 @@
         "language": "言語:",
         "windowed": "ウィンドウモード",
         "fullscreen": "フルスクリーン",
-        "apply": "適用"
+        "apply": "適用",
+        "close": "閉じる"
       },
       "character_select": {
         "title": "キャラクター選択",

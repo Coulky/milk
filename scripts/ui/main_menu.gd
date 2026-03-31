@@ -26,14 +26,37 @@ func _on_start_button_pressed():
 	get_tree().change_scene_to_packed(character_select_scene)
 
 func _on_settings_button_pressed():
+	# 创建灰色蒙版
+	var overlay = ColorRect.new()
+	overlay.name = "SettingsOverlay"
+	overlay.anchors_preset = 15
+	overlay.anchor_right = 1.0
+	overlay.anchor_bottom = 1.0
+	overlay.grow_horizontal = 2
+	overlay.grow_vertical = 2
+	overlay.color = Color(0, 0, 0, 0.7)  # 半透明黑色蒙版
+	overlay.mouse_filter = Control.MOUSE_FILTER_STOP  # 阻止点击穿透
+	add_child(overlay)
+	
 	# 创建设置对话框
 	var dialog = AcceptDialog.new()
 	dialog.title = ConfigManager.get_language_text("settings.title", "设置")
 	dialog.min_size = Vector2(400, 300)
 	
+	# 移除默认的 OK 按钮
+	dialog.get_ok_button().queue_free()
+	
+	# 隐藏右上角的关闭按钮 - 使用 Godot 4 正确的方法
+	if dialog.has_node("close_button"):
+		dialog.get_node("close_button").queue_free()
+	
 	# 创建垂直容器
 	var vbox = VBoxContainer.new()
 	dialog.add_child(vbox)
+	vbox.add_theme_constant_override("margin_left", 20)
+	vbox.add_theme_constant_override("margin_right", 20)
+	vbox.add_theme_constant_override("margin_top", 20)
+	vbox.add_theme_constant_override("margin_bottom", 20)
 	
 	# 分辨率设置
 	var resolution_hbox = HBoxContainer.new()
@@ -118,13 +141,40 @@ func _on_settings_button_pressed():
 				locale = "ja"
 		TranslationServer.set_locale(locale)
 		
+		# 刷新界面文本
+		if has_node("VBoxContainer/StartButton"):
+			$VBoxContainer/StartButton.text = ConfigManager.get_language_text("main_menu.start_game", "开始游戏")
+		if has_node("VBoxContainer/SettingsButton"):
+			$VBoxContainer/SettingsButton.text = ConfigManager.get_language_text("main_menu.settings", "设置")
+		if has_node("VBoxContainer/QuitButton"):
+			$VBoxContainer/QuitButton.text = ConfigManager.get_language_text("main_menu.quit", "退出")
+		
+		# 清理
 		dialog.hide()
 		dialog.queue_free()
+		overlay.queue_free()
 	)
 	vbox.add_child(apply_button)
 	
+	# 关闭按钮
+	var close_button = Button.new()
+	close_button.text = ConfigManager.get_language_text("settings.close", "关闭")
+	close_button.pressed.connect(func():
+		dialog.hide()
+		dialog.queue_free()
+		overlay.queue_free()
+	)
+	vbox.add_child(close_button)
+	
+	# 处理对话框关闭事件
+	dialog.close_requested.connect(func():
+		dialog.hide()
+		dialog.queue_free()
+		overlay.queue_free()
+	)
+	
 	add_child(dialog)
-	dialog.show()
+	dialog.popup_centered()  # 居中显示对话框
 
 func _on_quit_button_pressed():
 	get_tree().quit()
