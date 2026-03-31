@@ -1,6 +1,6 @@
-# Milk Survivor - 类吸血鬼幸存者游戏
+# Milk - 猫咪牛奶大战老鼠
 
-一个使用 Godot 4 + GDScript 开发的类吸血鬼幸存者游戏框架。
+一个使用 Godot 4 + GDScript 开发的猫咪牛奶大战老鼠游戏。
 
 ## 项目结构
 

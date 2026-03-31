@@ -79,6 +79,10 @@ func die():
 	queue_free()
 
 func spawn_experience_gem():
+	# 使用 call_deferred 来避免在物理查询刷新期间修改场景树
+	call_deferred("_spawn_experience_gem_deferred")
+
+func _spawn_experience_gem_deferred():
 	var gem_scene = preload("res://scenes/entities/experience_gem.tscn")
 	var gem = gem_scene.instantiate()
 	gem.global_position = global_position

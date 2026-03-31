@@ -42,12 +42,14 @@ func start_game():
 func pause_game():
 	if is_game_running:
 		is_paused = true
+		# 暂停整个场景树
 		get_tree().paused = true
 		emit_signal("game_paused")
 
 func resume_game():
 	if is_game_running and is_paused:
 		is_paused = false
+		# 恢复整个场景树
 		get_tree().paused = false
 		emit_signal("game_resumed")
 

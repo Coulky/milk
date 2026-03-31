@@ -20,6 +20,8 @@ func _ready():
 	setup_visuals()
 
 func setup_visuals():
+	if not is_instance_valid(sprite):
+		return
 	sprite.text = projectile_symbol
 	sprite.add_theme_color_override("font_color", projectile_color)
 	sprite.add_theme_font_size_override("font_size", 16)
@@ -63,4 +65,5 @@ func _on_body_entered(body):
 		body.take_damage(damage)
 		
 		if hit_enemies.size() >= piercing:
-			queue_free()
+			# 使用 call_deferred 来避免在物理查询刷新期间修改场景树
+			call_deferred("queue_free")
