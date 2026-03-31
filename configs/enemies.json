@@ -1,0 +1,69 @@
+{
+  "enemies": [
+    {
+      "id": "zombie",
+      "name": "僵尸",
+      "symbol": "Z",
+      "symbol_color": "#00ff00",
+      "model_path": "",
+      "max_health": 20,
+      "speed": 80,
+      "damage": 5,
+      "experience": 1,
+      "spawn_weight": 10,
+      "min_wave": 1
+    },
+    {
+      "id": "skeleton",
+      "name": "骷髅",
+      "symbol": "S",
+      "symbol_color": "#ffffff",
+      "model_path": "",
+      "max_health": 30,
+      "speed": 100,
+      "damage": 8,
+      "experience": 2,
+      "spawn_weight": 8,
+      "min_wave": 2
+    },
+    {
+      "id": "bat",
+      "name": "蝙蝠",
+      "symbol": "B",
+      "symbol_color": "#ff00ff",
+      "model_path": "",
+      "max_health": 10,
+      "speed": 150,
+      "damage": 3,
+      "experience": 1,
+      "spawn_weight": 12,
+      "min_wave": 1
+    },
+    {
+      "id": "ghost",
+      "name": "幽灵",
+      "symbol": "G",
+      "symbol_color": "#88ffff",
+      "model_path": "",
+      "max_health": 40,
+      "speed": 90,
+      "damage": 12,
+      "experience": 5,
+      "spawn_weight": 5,
+      "min_wave": 3
+    },
+    {
+      "id": "demon",
+      "name": "恶魔",
+      "symbol": "D",
+      "symbol_color": "#ff0000",
+      "model_path": "",
+      "max_health": 100,
+      "speed": 70,
+      "damage": 25,
+      "experience": 20,
+      "spawn_weight": 2,
+      "min_wave": 5
+    }
+  ]
+}

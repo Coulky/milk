@@ -1,0 +1,143 @@
+{
+  "weapons": [
+    {
+      "id": "sword",
+      "name": "剑",
+      "description": "近战武器，攻击周围敌人",
+      "type": "melee",
+      "symbol": "/",
+      "symbol_color": "#ffffff",
+      "model_path": "",
+      "damage": 10,
+      "attack_speed": 1.0,
+      "range": 80,
+      "projectile_count": 1,
+      "projectile_speed": 0,
+      "piercing": 3,
+      "evolution": {
+        "required_item": "armor",
+        "evolves_to": "holy_sword"
+      }
+    },
+    {
+      "id": "magic_orb",
+      "name": "魔法球",
+      "description": "发射追踪敌人的魔法球",
+      "type": "projectile",
+      "symbol": "o",
+      "symbol_color": "#00ffff",
+      "model_path": "",
+      "damage": 8,
+      "attack_speed": 1.5,
+      "range": 300,
+      "projectile_count": 1,
+      "projectile_speed": 400,
+      "piercing": 1,
+      "homing": true,
+      "evolution": {
+        "required_item": "spellbook",
+        "evolves_to": "chaos_orb"
+      }
+    },
+    {
+      "id": "fire_ring",
+      "name": "火焰环",
+      "description": "在周围形成火焰环",
+      "type": "area",
+      "symbol": "O",
+      "symbol_color": "#ff8800",
+      "model_path": "",
+      "damage": 15,
+      "attack_speed": 2.0,
+      "range": 100,
+      "projectile_count": 1,
+      "projectile_speed": 0,
+      "piercing": 999,
+      "evolution": {
+        "required_item": "candle",
+        "evolves_to": "hellfire"
+      }
+    },
+    {
+      "id": "lightning",
+      "name": "闪电",
+      "description": "随机攻击屏幕上的敌人",
+      "type": "instant",
+      "symbol": "!",
+      "symbol_color": "#ffff00",
+      "model_path": "",
+      "damage": 20,
+      "attack_speed": 3.0,
+      "range": 500,
+      "projectile_count": 2,
+      "projectile_speed": 0,
+      "piercing": 1,
+      "evolution": {
+        "required_item": "magnet",
+        "evolves_to": "thunder_storm"
+      }
+    }
+  ],
+  "passive_items": [
+    {
+      "id": "armor",
+      "name": "护甲",
+      "description": "增加防御力",
+      "symbol": "[",
+      "symbol_color": "#888888",
+      "model_path": "",
+      "effects": {
+        "defense": 3
+      },
+      "max_level": 5
+    },
+    {
+      "id": "spellbook",
+      "name": "法术书",
+      "description": "减少武器冷却时间",
+      "symbol": "=",
+      "symbol_color": "#ff00ff",
+      "model_path": "",
+      "effects": {
+        "cooldown_reduction": 0.1
+      },
+      "max_level": 5
+    },
+    {
+      "id": "candle",
+      "name": "蜡烛",
+      "description": "增加攻击范围",
+      "symbol": "i",
+      "symbol_color": "#ffaa00",
+      "model_path": "",
+      "effects": {
+        "area_bonus": 0.1
+      },
+      "max_level": 5
+    },
+    {
+      "id": "magnet",
+      "name": "磁铁",
+      "description": "增加拾取范围",
+      "symbol": "U",
+      "symbol_color": "#ff0088",
+      "model_path": "",
+      "effects": {
+        "pickup_range": 50
+      },
+      "max_level": 5
+    },
+    {
+      "id": "heart",
+      "name": "心",
+      "description": "增加最大生命值",
+      "symbol": "<3",
+      "symbol_color": "#ff0000",
+      "model_path": "",
+      "effects": {
+        "max_health": 20
+      },
+      "max_level": 5
+    }
+  ]
+}

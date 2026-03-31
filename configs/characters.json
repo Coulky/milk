@@ -1,0 +1,35 @@
+{
+  "characters": [
+    {
+      "id": "warrior",
+      "name": "战士",
+      "description": "基础角色，平衡型战士",
+      "symbol": "@",
+      "symbol_color": "#00ff00",
+      "model_path": "",
+      "max_health": 100,
+      "speed": 200,
+      "attack": 10,
+      "defense": 5,
+      "starting_weapons": ["sword"],
+      "unlock_condition": null
+    },
+    {
+      "id": "mage",
+      "name": "法师",
+      "description": "高攻击低防御的法师",
+      "symbol": "M",
+      "symbol_color": "#0088ff",
+      "model_path": "",
+      "max_health": 60,
+      "speed": 180,
+      "attack": 20,
+      "defense": 2,
+      "starting_weapons": ["magic_orb"],
+      "unlock_condition": {
+        "type": "kill_enemies",
+        "value": 1000
+      }
+    }
+  ]
+}

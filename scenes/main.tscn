@@ -1,0 +1,21 @@
+[gd_scene load_steps=5 format=3 uid="uid://main_scene"]
+
+[ext_resource type="Script" path="res://scripts/main.gd" id="1_main"]
+[ext_resource type="Script" path="res://scripts/managers/enemy_spawner.gd" id="2_spawner"]
+[ext_resource type="PackedScene" uid="uid://game_ui_scene" path="res://scenes/ui/game_ui.tscn" id="3_gameui"]
+[ext_resource type="PackedScene" uid="uid://upgrade_ui_scene" path="res://scenes/ui/upgrade_ui.tscn" id="4_upgradeui"]
+
+[node name="Main" type="Node2D"]
+script = ExtResource("1_main")
+
+[node name="Camera2D" type="Camera2D" parent="."]
+
+[node name="PlayerSpawn" type="Marker2D" parent="."]
+position = Vector2(640, 360)
+
+[node name="EnemySpawner" type="Node" parent="."]
+script = ExtResource("2_spawner")
+
+[node name="GameUI" parent="." instance=ExtResource("3_gameui")]
+
+[node name="UpgradeUI" parent="." instance=ExtResource("4_upgradeui")]
