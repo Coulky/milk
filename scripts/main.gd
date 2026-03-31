@@ -16,8 +16,12 @@ func _ready():
 func start_game():
 	GameManager.start_game()
 	
+	# 计算视口中心位置
+	var viewport_size = get_viewport().size
+	var center_position = viewport_size / 2
+	
 	player = player_scene.instantiate()
-	player.global_position = player_spawn.global_position
+	player.global_position = center_position
 	add_child(player)
 	
 	game_ui.visible = true

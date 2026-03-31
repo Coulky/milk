@@ -16,6 +16,7 @@ var kill_count: int = 0
 var total_experience: int = 0
 var current_level: int = 1
 var experience_to_next_level: int = 10
+var selected_character: String = "warrior"  # 默认角色
 
 var player: Node2D = null
 var enemies: Array = []

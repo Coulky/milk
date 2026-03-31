@@ -20,6 +20,25 @@
       }
     },
     {
+      "id": "bow",
+      "name": "弓",
+      "description": "远程武器，发射弓箭",
+      "type": "projectile",
+      "symbol": "|",
+      "symbol_color": "#88ff88",
+      "model_path": "",
+      "damage": 12,
+      "attack_speed": 1.2,
+      "range": 400,
+      "projectile_count": 1,
+      "projectile_speed": 600,
+      "piercing": 1,
+      "evolution": {
+        "required_item": "quiver",
+        "evolves_to": "holy_bow"
+      }
+    },
+    {
       "id": "magic_orb",
       "name": "魔法球",
       "description": "发射追踪敌人的魔法球",

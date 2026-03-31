@@ -1,6 +1,7 @@
 extends CharacterBody2D
 
-@export var character_id: String = "warrior"
+# 从 GameManager 获取选中的角色
+var character_id: String = ""
 
 var character_config: Dictionary = {}
 var max_health: int = 100
@@ -27,6 +28,8 @@ signal player_died
 @onready var weapons_container: Node2D = $Weapons
 
 func _ready():
+	# 从 GameManager 获取选中的角色
+	character_id = GameManager.selected_character
 	load_character_config()
 	setup_character()
 	add_starting_weapons()

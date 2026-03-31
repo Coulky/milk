@@ -15,6 +15,20 @@
       "unlock_condition": null
     },
     {
+      "id": "hunter",
+      "name": "猎人",
+      "description": "远程攻击的猎人",
+      "symbol": "H",
+      "symbol_color": "#ffff00",
+      "model_path": "",
+      "max_health": 80,
+      "speed": 220,
+      "attack": 15,
+      "defense": 3,
+      "starting_weapons": ["bow"],
+      "unlock_condition": null
+    },
+    {
       "id": "mage",
       "name": "法师",
       "description": "高攻击低防御的法师",

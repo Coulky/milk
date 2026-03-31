@@ -1,6 +1,6 @@
 extends Control
 
-var game_scene = preload("res://scenes/main.tscn")
+var character_select_scene = preload("res://scenes/ui/character_select.tscn")
 
 # 常用分辨率选项
 var resolutions = [
@@ -16,8 +16,8 @@ func _ready():
 	pass
 
 func _on_start_button_pressed():
-	# 使用推荐的场景切换方式，确保场景正确清理
-	get_tree().change_scene_to_packed(game_scene)
+	# 切换到角色选择场景
+	get_tree().change_scene_to_packed(character_select_scene)
 
 func _on_settings_button_pressed():
 	# 创建设置对话框

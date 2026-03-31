@@ -1,0 +1,66 @@
+[gd_scene load_steps=2 format=3 uid="uid://character_select_scene"]
+
+[ext_resource type="Script" path="res://scripts/ui/character_select.gd" id="1_charselect"]
+
+[node name="CharacterSelect" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_charselect")
+
+[node name="Background" type="ColorRect" parent="."]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.1, 0.1, 0.2, 1)
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+layout_mode = 2
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.2
+anchor_right = 0.5
+anchor_bottom = 0.2
+offset_left = -300.0
+offset_top = -50.0
+offset_right = 300.0
+offset_bottom = 50.0
+
+[node name="Title" type="Label" parent="VBoxContainer"]
+layout_mode = 2
+text = "选择角色"
+horizontal_alignment = 1
+add_theme_font_size_override("font_size", 48)
+add_theme_color_override("font_color", Color(1, 1, 1))
+
+[node name="HSeparator" type="HSeparator" parent="VBoxContainer"]
+layout_mode = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer"]
+layout_mode = 2
+
+[node name="WarriorButton" type="Button" parent="VBoxContainer/HBoxContainer"]
+layout_mode = 2
+text = "战士\n[剑]"
+
+[node name="HunterButton" type="Button" parent="VBoxContainer/HBoxContainer"]
+layout_mode = 2
+text = "猎人\n[弓]"
+
+[node name="MageButton" type="Button" parent="VBoxContainer/HBoxContainer"]
+layout_mode = 2
+text = "法师\n[法杖]"
+
+[node name="BackButton" type="Button" parent="VBoxContainer"]
+layout_mode = 2
+text = "返回"
+
+[connection signal="pressed" from="VBoxContainer/HBoxContainer/WarriorButton" to="." method="_on_warrior_button_pressed"]
+[connection signal="pressed" from="VBoxContainer/HBoxContainer/HunterButton" to="." method="_on_hunter_button_pressed"]
+[connection signal="pressed" from="VBoxContainer/HBoxContainer/MageButton" to="." method="_on_mage_button_pressed"]
+[connection signal="pressed" from="VBoxContainer/BackButton" to="." method="_on_back_button_pressed"]
