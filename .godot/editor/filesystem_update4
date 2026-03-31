@@ -10,3 +10,4 @@ res://scripts/managers/game_manager.gd
 res://scripts/managers/enemy_spawner.gd
 res://scripts/ui/main_menu.gd
 res://scripts/ui/character_select.gd
+res://configs/characters.json

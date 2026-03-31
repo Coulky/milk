@@ -97,13 +97,19 @@ func create_pause_dialog():
 func start_game():
 	GameManager.start_game()
 	
-	# 计算视口中心位置
-	var viewport_size = get_viewport().size
-	var center_position = viewport_size / 2
+	# 计算地图中心位置（2000x2000的正方形）
+	var map_center = Vector2(1000, 1000)
 	
 	player = player_scene.instantiate()
-	player.global_position = center_position
+	player.global_position = map_center
 	add_child(player)
+	
+	# 锁定相机视角在地图中央
+	if has_node("Camera2D"):
+		var camera = $Camera2D
+		camera.position = map_center
+		# 设为当前相机
+		camera.make_current()
 	
 	game_ui.visible = true
 

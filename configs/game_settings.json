@@ -10,8 +10,8 @@
   },
   "level_up_choices": 3,
   "map_size": {
-    "width": 4000,
-    "height": 4000
+    "width": 2000,
+    "height": 2000
   },
   "waves": [
     {

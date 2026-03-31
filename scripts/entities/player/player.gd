@@ -48,15 +48,61 @@ func setup_character():
 	base_attack = character_config.get("attack", 10)
 	defense = character_config.get("defense", 5)
 	
+	var model_path = character_config.get("model_path", "")
+	var model_width = character_config.get("model_width", 0)
+	var model_height = character_config.get("model_height", 0)
 	var symbol = character_config.get("symbol", "@")
 	var color = Color(character_config.get("symbol_color", "#00ff00"))
 	
-	if sprite:
-		sprite.text = symbol
-		sprite.add_theme_color_override("font_color", color)
-		sprite.add_theme_font_size_override("font_size", 32)
-		sprite.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-		sprite.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	var sprite_2d: Sprite2D = null
+	
+	if model_path and model_path != "":
+		# 如果有模型路径，创建 Sprite2D 节点
+		if has_node("Sprite2D"):
+			sprite_2d = $Sprite2D
+		else:
+			sprite_2d = Sprite2D.new()
+			sprite_2d.name = "Sprite2D"
+			add_child(sprite_2d)
+		
+		# 加载图片
+		var texture = load(model_path)
+		if texture:
+			sprite_2d.texture = texture
+			# 应用尺寸设置
+			if model_width > 0 and model_height > 0:
+				# 计算缩放比例
+				var original_size = texture.get_size()
+				var scale_x = model_width / original_size.x
+				var scale_y = model_height / original_size.y
+				sprite_2d.scale = Vector2(scale_x, scale_y)
+			# 隐藏原有的 Label 节点
+			if sprite:
+				sprite.hide()
+		else:
+			# 如果图片加载失败，显示符号
+			if sprite:
+				sprite.text = symbol
+				sprite.add_theme_color_override("font_color", color)
+				sprite.add_theme_font_size_override("font_size", 32)
+				sprite.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+				sprite.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+				sprite.show()
+			# 隐藏 Sprite2D 节点
+			if sprite_2d:
+				sprite_2d.hide()
+	else:
+		# 如果没有模型路径，显示符号
+		if sprite:
+			sprite.text = symbol
+			sprite.add_theme_color_override("font_color", color)
+			sprite.add_theme_font_size_override("font_size", 32)
+			sprite.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+			sprite.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+			sprite.show()
+		# 隐藏可能存在的 Sprite2D 节点
+		if has_node("Sprite2D"):
+			$Sprite2D.hide()
 
 func add_starting_weapons():
 	var starting_weapons = character_config.get("starting_weapons", [])
