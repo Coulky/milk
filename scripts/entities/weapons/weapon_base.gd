@@ -28,9 +28,9 @@ var weapon_color: Color = Color.WHITE
 
 signal attack_performed
 
-func setup(config: Dictionary, owner: Node2D):
+func setup(config: Dictionary, player: Node2D):
 	weapon_config = config
-	owner_player = owner
+	owner_player = player
 	
 	weapon_id = config.get("id", "")
 	weapon_name = config.get("name", "")
@@ -147,7 +147,7 @@ func create_projectile() -> Node2D:
 	var projectile_scene = preload("res://scenes/entities/projectile.tscn")
 	return projectile_scene.instantiate()
 
-func create_lightning_effect(pos: Vector2):
+func create_lightning_effect(_pos: Vector2):
 	pass
 
 func apply_cooldown_reduction(value: float):

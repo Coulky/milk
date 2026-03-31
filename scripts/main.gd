@@ -22,7 +22,7 @@ func start_game():
 	
 	game_ui.visible = true
 
-func _on_level_up(new_level: int):
+func _on_level_up(_new_level: int):
 	upgrade_ui.show_upgrades()
 
 func _on_game_over():

@@ -54,6 +54,9 @@ func end_game():
 	is_game_running = false
 	emit_signal("game_over")
 
+func update_player_health(current_health: int, max_health: int):
+	emit_signal("health_changed", current_health, max_health)
+
 func register_player(p: Node2D):
 	player = p
 
@@ -82,7 +85,7 @@ func add_experience(amount: int):
 		emit_signal("level_up", current_level)
 
 func get_game_time_formatted() -> String:
-	var minutes = int(game_time) / 60
+	var minutes = int(game_time / 60)
 	var seconds = int(game_time) % 60
 	return "%02d:%02d" % [minutes, seconds]
 

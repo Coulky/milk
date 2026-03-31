@@ -14,7 +14,7 @@ func _ready():
 	
 	update_ui()
 
-func _process(delta):
+func _process(_delta):
 	if GameManager.is_game_running:
 		time_label.text = GameManager.get_game_time_formatted()
 

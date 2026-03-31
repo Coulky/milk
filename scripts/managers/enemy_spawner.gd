@@ -1,4 +1,4 @@
-extends Node2D
+extends Node
 
 @export var spawn_radius: float = 800.0
 @export var min_spawn_distance: float = 300.0

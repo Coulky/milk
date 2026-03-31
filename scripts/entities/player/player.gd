@@ -111,7 +111,7 @@ func update_pickup_area():
 		if collision_shape and collision_shape.shape is CircleShape2D:
 			collision_shape.shape.radius = pickup_range
 
-func _physics_process(delta):
+func _physics_process(_delta):
 	if not GameManager.is_game_running or GameManager.is_paused:
 		return
 	
@@ -132,7 +132,7 @@ func take_damage(amount: int):
 	var actual_damage = max(1, amount - defense)
 	current_health -= actual_damage
 	emit_signal("health_changed", current_health, max_health)
-	GameManager.emit_signal("health_changed", current_health, max_health)
+	GameManager.update_player_health(current_health, max_health)
 	
 	if current_health <= 0:
 		die()
@@ -142,7 +142,7 @@ func take_damage(amount: int):
 func heal(amount: int):
 	current_health = min(max_health, current_health + amount)
 	emit_signal("health_changed", current_health, max_health)
-	GameManager.emit_signal("health_changed", current_health, max_health)
+	GameManager.update_player_health(current_health, max_health)
 
 func start_invincibility():
 	is_invincible = true

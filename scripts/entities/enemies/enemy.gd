@@ -46,7 +46,7 @@ func setup_enemy():
 		sprite.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		sprite.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 
-func _physics_process(delta):
+func _physics_process(_delta):
 	if not GameManager.is_game_running or GameManager.is_paused:
 		return
 	
