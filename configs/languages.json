@@ -1,0 +1,157 @@
+{
+  "languages": {
+    "zh_CN": {
+      "main_menu": {
+        "start_game": "开始游戏",
+        "settings": "设置",
+        "quit": "退出"
+      },
+      "settings": {
+        "title": "设置",
+        "resolution": "分辨率:",
+        "display_mode": "显示模式:",
+        "language": "语言:",
+        "windowed": "窗口模式",
+        "fullscreen": "全屏模式",
+        "apply": "应用"
+      },
+      "character_select": {
+        "title": "选择角色",
+        "warrior": "战士",
+        "hunter": "猎人",
+        "mage": "法师",
+        "back": "返回"
+      },
+      "pause_menu": {
+        "title": "游戏暂停",
+        "continue": "继续游戏",
+        "restart": "重新开始",
+        "exit": "退出"
+      },
+      "game_over": {
+        "title": "游戏结束！",
+        "restart": "按 R 重新开始"
+      },
+      "ui": {
+        "time": "时间",
+        "level": "等级",
+        "kill": "击杀"
+      },
+      "characters": {
+        "warrior": "战士",
+        "hunter": "猎人",
+        "mage": "法师",
+        "warrior_desc": "基础角色，平衡型战士",
+        "hunter_desc": "远程攻击的猎人",
+        "mage_desc": "高攻击低防御的法师"
+      },
+      "weapons": {
+        "sword": "剑",
+        "bow": "弓",
+        "magic_orb": "魔法球"
+      }
+    },
+    "en": {
+      "main_menu": {
+        "start_game": "Start Game",
+        "settings": "Settings",
+        "quit": "Quit"
+      },
+      "settings": {
+        "title": "Settings",
+        "resolution": "Resolution:",
+        "display_mode": "Display Mode:",
+        "language": "Language:",
+        "windowed": "Windowed",
+        "fullscreen": "Fullscreen",
+        "apply": "Apply"
+      },
+      "character_select": {
+        "title": "Select Character",
+        "warrior": "Warrior",
+        "hunter": "Hunter",
+        "mage": "Mage",
+        "back": "Back"
+      },
+      "pause_menu": {
+        "title": "Game Paused",
+        "continue": "Continue",
+        "restart": "Restart",
+        "exit": "Exit"
+      },
+      "game_over": {
+        "title": "Game Over!",
+        "restart": "Press R to restart"
+      },
+      "ui": {
+        "time": "Time",
+        "level": "Level",
+        "kill": "Kills"
+      },
+      "characters": {
+        "warrior": "Warrior",
+        "hunter": "Hunter",
+        "mage": "Mage",
+        "warrior_desc": "Basic character, balanced warrior",
+        "hunter_desc": "Ranged attacker",
+        "mage_desc": "High attack, low defense mage"
+      },
+      "weapons": {
+        "sword": "Sword",
+        "bow": "Bow",
+        "magic_orb": "Magic Orb"
+      }
+    },
+    "ja": {
+      "main_menu": {
+        "start_game": "ゲーム開始",
+        "settings": "設定",
+        "quit": "終了"
+      },
+      "settings": {
+        "title": "設定",
+        "resolution": "解像度:",
+        "display_mode": "表示モード:",
+        "language": "言語:",
+        "windowed": "ウィンドウモード",
+        "fullscreen": "フルスクリーン",
+        "apply": "適用"
+      },
+      "character_select": {
+        "title": "キャラクター選択",
+        "warrior": "戦士",
+        "hunter": "ハンター",
+        "mage": "魔法使い",
+        "back": "戻る"
+      },
+      "pause_menu": {
+        "title": "ゲーム一時停止",
+        "continue": "続ける",
+        "restart": "再スタート",
+        "exit": "終了"
+      },
+      "game_over": {
+        "title": "ゲームオーバー！",
+        "restart": "Rキーを押して再スタート"
+      },
+      "ui": {
+        "time": "時間",
+        "level": "レベル",
+        "kill": "キル"
+      },
+      "characters": {
+        "warrior": "戦士",
+        "hunter": "ハンター",
+        "mage": "魔法使い",
+        "warrior_desc": "基本キャラクター、バランスの取れた戦士",
+        "hunter_desc": "遠距離攻撃のハンター",
+        "mage_desc": "高攻撃力、低防御力の魔法使い"
+      },
+      "weapons": {
+        "sword": "剣",
+        "bow": "弓",
+        "magic_orb": "魔法の玉"
+      }
+    }
+  }
+}

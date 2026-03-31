@@ -4,6 +4,7 @@ var characters_config: Dictionary = {}
 var enemies_config: Dictionary = {}
 var weapons_config: Dictionary = {}
 var game_settings: Dictionary = {}
+var languages_config: Dictionary = {}
 
 func _ready():
 	load_all_configs()
@@ -13,6 +14,7 @@ func load_all_configs():
 	enemies_config = load_json("res://configs/enemies.json")
 	weapons_config = load_json("res://configs/weapons.json")
 	game_settings = load_json("res://configs/game_settings.json")
+	languages_config = load_json("res://configs/languages.json")
 
 func load_json(path: String) -> Dictionary:
 	var file = FileAccess.open(path, FileAccess.READ)
@@ -75,3 +77,27 @@ func get_wave_data() -> Array:
 
 func get_map_size() -> Dictionary:
 	return game_settings.get("map_size", {"width": 4000, "height": 4000})
+
+func get_language_text(key: String, default: String = "") -> String:
+	var locale = TranslationServer.get_locale()
+	# 确保语言代码格式正确
+	if locale == "en_US":
+		locale = "en"
+	
+	# 获取对应语言的配置
+	var language_data = languages_config.get("languages", {}).get(locale, {})
+	
+	# 如果没有对应语言的配置，使用默认语言（简体中文）
+	if language_data.is_empty():
+		language_data = languages_config.get("languages", {}).get("zh_CN", {})
+	
+	# 解析键路径，支持点号分隔的路径
+	var keys = key.split(".")
+	var current_data = language_data
+	
+	for k in keys:
+		if not current_data.has(k):
+			return default
+		current_data = current_data[k]
+	
+	return current_data if typeof(current_data) == TYPE_STRING else default
