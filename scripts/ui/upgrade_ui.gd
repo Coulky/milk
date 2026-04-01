@@ -5,7 +5,7 @@ signal upgrade_selected(upgrade_data)
 var available_upgrades: Array = []
 var selected_upgrade: Dictionary = {}
 
-@onready var upgrade_container: VBoxContainer = $PanelContainer/VBoxContainer
+@onready var upgrade_container: HBoxContainer = $PanelContainer/VBoxContainer/UpgradesContainer
 
 func _ready():
 	if is_instance_valid(self):
@@ -53,32 +53,66 @@ func display_upgrades():
 		child.queue_free()
 	
 	for upgrade in available_upgrades:
+		# 创建按钮作为容器
 		var button = Button.new()
-		button.text = "%s - %s" % [upgrade.get("symbol", "?"), upgrade.get("name", "Unknown")]
+		button.custom_minimum_size = Vector2(150, 200)
 		
-		# 构建 tooltip 文本
-		var tooltip = upgrade.get("description", "")
+		# 创建垂直布局容器
+		var vbox = VBoxContainer.new()
+		vbox.alignment = BoxContainer.ALIGNMENT_CENTER
+		button.add_child(vbox)
+		
+		# 第一行：图标和名字
+		var name_hbox = HBoxContainer.new()
+		name_hbox.alignment = BoxContainer.ALIGNMENT_CENTER
+		vbox.add_child(name_hbox)
+		
+		var icon_label = Label.new()
+		icon_label.text = upgrade.get("symbol", "?")
+		icon_label.add_theme_font_size_override("font_size", 32)
+		name_hbox.add_child(icon_label)
+		
+		var name_label = Label.new()
+		name_label.text = upgrade.get("name", "Unknown")
+		name_label.add_theme_font_size_override("font_size", 18)
+		name_hbox.add_child(name_label)
+		
+		# 第二行：描述
+		var desc_label = Label.new()
+		desc_label.text = upgrade.get("description", "")
+		desc_label.add_theme_font_size_override("font_size", 12)
+		desc_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		vbox.add_child(desc_label)
 		
 		# 显示物品属性（只显示非零属性）
 		if upgrade.get("type") == "item" and upgrade.has("stats"):
 			var stats = upgrade.get("stats")
-			var non_zero_stats = []
+			var stats_vbox = VBoxContainer.new()
+			vbox.add_child(stats_vbox)
 			
 			for stat_name in stats.keys():
 				var value = stats[stat_name]
 				if value != 0:
-					non_zero_stats.append(ConfigManager.get_item_attribute_text(stat_name, value))
-			
-			if non_zero_stats.size() > 0:
-				tooltip += "\n\n属性："
-				for stat_text in non_zero_stats:
-					tooltip += "\n- " + stat_text
+					var stat_label = Label.new()
+					stat_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+					stat_label.add_theme_font_size_override("font_size", 11)
+					
+					# 获取属性显示文本
+					var attr_name = ConfigManager.get_attribute_name(stat_name)
+					var unit = ConfigManager.get_attribute_unit(stat_name)
+					
+					if value > 0:
+						stat_label.text = "+%d%s %s" % [value, unit, attr_name]
+						stat_label.add_theme_color_override("font_color", Color(0, 1, 0))  # 绿色
+					else:
+						stat_label.text = "%d%s %s" % [value, unit, attr_name]
+						stat_label.add_theme_color_override("font_color", Color(1, 0, 0))  # 红色
+					
+					stats_vbox.add_child(stat_label)
 		
-		button.tooltip_text = tooltip
-		
+		# 设置按钮样式
 		var style = StyleBoxFlat.new()
-		style.bg_color = Color(upgrade.get("color", "#ffffff"))
-		style.bg_color.a = 0.3
+		style.bg_color = Color(0.2, 0.2, 0.2, 0.8)
 		button.add_theme_stylebox_override("normal", style)
 		
 		button.pressed.connect(_on_upgrade_selected.bind(upgrade))
