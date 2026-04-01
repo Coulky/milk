@@ -8,8 +8,8 @@ script = ExtResource("1_gameui")
 
 [node name="MarginContainer" type="MarginContainer" parent="."]
 anchors_preset = 0
-offset_right = 300.0
-offset_bottom = 150.0
+offset_right = 400.0
+offset_bottom = 200.0
 theme_override_constants/margin_left = 10
 theme_override_constants/margin_top = 10
 theme_override_constants/margin_right = 10
@@ -45,20 +45,27 @@ custom_minimum_size = Vector2(0, 20)
 layout_mode = 2
 value = 50.0
 
-[node name="HBoxContainer4" type="HBoxContainer" parent="MarginContainer/VBoxContainer"]
+[node name="HealthBarContainer" type="Control" parent="MarginContainer/VBoxContainer"]
 layout_mode = 2
-
-[node name="HealthBar" type="ProgressBar" parent="MarginContainer/VBoxContainer/HBoxContainer4"]
 custom_minimum_size = Vector2(0, 20)
-layout_mode = 2
+
+[node name="HealthBar" type="ProgressBar" parent="MarginContainer/VBoxContainer/HealthBarContainer"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+custom_minimum_size = Vector2(0, 20)
 max_value = 100.0
 value = 100.0
+theme_override_constants/percent_visible = false
 
-[node name="HealthLabel" type="Label" parent="MarginContainer/VBoxContainer/HBoxContainer4"]
-layout_mode = 2
+[node name="HealthLabel" type="Label" parent="MarginContainer/VBoxContainer/HealthBarContainer"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
 text = "100/100"
-min_size = Vector2(60, 0)
-text_alignment = 2
+text_alignment = 1
 
 [node name="HBoxContainer3" type="HBoxContainer" parent="MarginContainer/VBoxContainer"]
 layout_mode = 2

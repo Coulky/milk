@@ -128,13 +128,13 @@ func get_item_name(item_id):
 		locale = "en"
 	if item.has("name") and typeof(item["name"]) == TYPE_DICTIONARY:
 		if item["name"].has(locale):
-			var name = item["name"][locale]
-			if typeof(name) == TYPE_STRING and name != "":
-				return name
+			var item_name = item["name"][locale]
+			if typeof(item_name) == TYPE_STRING and item_name != "":
+				return item_name
 		if item["name"].has("zh_CN"):
-			var name = item["name"]["zh_CN"]
-			if typeof(name) == TYPE_STRING and name != "":
-				return name
+			var item_name = item["name"]["zh_CN"]
+			if typeof(item_name) == TYPE_STRING and item_name != "":
+				return item_name
 	return item_id
 
 func get_item_description(item_id, variables = {}):
