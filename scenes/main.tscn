@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" path="res://scripts/main.gd" id="1_main"]
 [ext_resource type="Script" path="res://scripts/managers/enemy_spawner.gd" id="2_spawner"]
-[ext_resource type="PackedScene" uid="uid://game_ui_scene" path="res://scenes/ui/game_ui.tscn" id="3_gameui"]
+[ext_resource type="PackedScene" path="res://scenes/ui/game_ui.tscn" id="3_gameui"]
 [ext_resource type="PackedScene" uid="uid://upgrade_ui_scene" path="res://scenes/ui/upgrade_ui.tscn" id="4_upgradeui"]
 
 [node name="Main" type="Node2D"]

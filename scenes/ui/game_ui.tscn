@@ -1,4 +1,4 @@
-[gd_scene load_steps=2 format=3 uid="uid://game_ui_scene"]
+[gd_scene load_steps=2 format=3 uid="uid://c2et0r98t749c"]
 
 [ext_resource type="Script" path="res://scripts/ui/game_ui.gd" id="1_gameui"]
 
@@ -77,3 +77,33 @@ text = "💀"
 [node name="KillLabel" type="Label" parent="MarginContainer/VBoxContainer/HBoxContainer3"]
 layout_mode = 2
 text = "击杀: 0"
+
+[node name="Inventory" type="Control" parent="."]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.25
+anchor_top = 0.9
+anchor_right = 0.75
+anchor_bottom = 1.0
+offset_left = 0.0
+offset_top = 0.0
+offset_right = 0.0
+offset_bottom = 0.0
+
+[node name="ColorRect" type="ColorRect" parent="Inventory"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(1, 0, 0, 0.3)
+
+[node name="ItemsContainer" type="HBoxContainer" parent="Inventory"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+alignment = 1

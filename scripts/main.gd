@@ -2,8 +2,8 @@ extends Node2D
 
 @onready var player_spawn: Marker2D = $PlayerSpawn
 @onready var enemy_spawner: Node = $EnemySpawner
-@onready var game_ui: CanvasLayer = $GameUI
-@onready var upgrade_ui: CanvasLayer = $UpgradeUI
+@onready var game_ui: CanvasLayer = get_node_or_null("GameUI")
+@onready var upgrade_ui: CanvasLayer = get_node_or_null("UpgradeUI")
 
 var player_scene = preload("res://scenes/entities/player.tscn")
 var player: CharacterBody2D = null
@@ -93,7 +93,6 @@ func create_pause_dialog():
 	
 	# 添加ESC键关闭功能
 	pause_dialog.connect("close_requested", func():
-		print("ESC键被按下，恢复游戏")
 		GameManager.resume_game()
 		pause_dialog.hide()
 	)
@@ -159,7 +158,6 @@ func create_death_dialog():
 	
 	# 添加ESC键关闭功能
 	death_dialog.connect("close_requested", func():
-		print("ESC键被按下，返回主菜单")
 		GameManager.resume_game()
 		GameManager.reset_game()
 		death_dialog.hide()
@@ -220,7 +218,8 @@ func start_game():
 		# 设为当前相机
 		camera.make_current()
 	
-	game_ui.visible = true
+	if game_ui and is_instance_valid(game_ui):
+		game_ui.visible = true
 
 func clear_map():
 	# 删除旧的玩家
@@ -285,7 +284,8 @@ func _on_level_up(_new_level: int):
 		upgrade_ui.show_upgrades()
 
 func _on_game_over():
-	game_ui.visible = false
+	if game_ui and is_instance_valid(game_ui):
+		game_ui.visible = false
 	# 显示死亡菜单（不要暂停游戏，避免场景树被暂停）
 	show_death_menu()
 
@@ -295,7 +295,6 @@ func _input(event: InputEvent):
 	
 	# 直接处理 ESC 键，确保在游戏暂停时能够恢复
 	if event.is_action_pressed("ui_cancel") and GameManager.is_paused:
-		print("ESC键被按下，恢复游戏")
 		GameManager.resume_game()
 		if pause_dialog and is_instance_valid(pause_dialog):
 			pause_dialog.hide()

@@ -17,3 +17,4 @@ res://scripts/managers/enemy_spawner.gd
 res://scripts/managers/config_manager.gd
 res://scripts/ui/upgrade_ui.gd
 res://scenes/ui/game_ui.tscn
+res://scenes/main.tscn

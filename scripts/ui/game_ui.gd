@@ -6,6 +6,10 @@ extends CanvasLayer
 @onready var health_bar: ProgressBar = $MarginContainer/VBoxContainer/HealthBarContainer/HealthBar
 @onready var health_label: Label = $MarginContainer/VBoxContainer/HealthBarContainer/HealthLabel
 @onready var kill_label: Label = $MarginContainer/VBoxContainer/HBoxContainer3/KillLabel
+@onready var items_container: HBoxContainer = $Inventory/ItemsContainer
+
+# 存储当前显示的物品
+var displayed_items: Dictionary = {}
 
 func _ready():
 	GameManager.connect("experience_gained", _on_experience_gained)
@@ -38,28 +42,56 @@ func _on_level_up(new_level: int):
 	exp_bar.value = 0
 
 func _on_health_changed(current_health: int, max_health: int):
-	# 直接使用实际生命值数值
-	health_bar.max_value = float(max_health)
-	health_bar.value = float(current_health)
-	print("Health changed: " + str(current_health) + "/" + str(max_health))
+	# 血条长度固定为 100，不随最大生命值增长而变长
+	health_bar.max_value = 100.0
+	# 计算生命值百分比
+	var health_percent = float(current_health) / float(max_health) * 100.0
+	health_bar.value = health_percent
 	# 显示当前生命值和最大生命值
 	health_label.text = "%d/%d" % [current_health, max_health]
-	print("Health bar value: " + str(health_bar.value) + ", max: " + str(health_bar.max_value))
 
 func _on_game_started():
-	print("Game started, initializing health bar")
 	var player = GameManager.get_player()
-	print("Player reference: " + str(player))
 	if player != null and player.has_method("get_health_info"):
-		print("Player has get_health_info method")
 		var health_info = player.get_health_info()
-		# 直接使用实际生命值数值
-		health_bar.max_value = float(health_info.max_health)
-		health_bar.value = float(health_info.current_health)
-		print("Health info: " + str(health_info))
+		# 血条长度固定为 100，不随最大生命值增长而变长
+		health_bar.max_value = 100.0
+		# 计算生命值百分比
+		var health_percent = float(health_info.current_health) / float(health_info.max_health) * 100.0
+		health_bar.value = health_percent
 		# 显示当前生命值和最大生命值
 		health_label.text = "%d/%d" % [health_info.current_health, health_info.max_health]
-		print("Health bar initialized: " + str(health_bar.value) + "/" + str(health_bar.max_value))
-	else:
-		print("Player not ready or missing get_health_info method")
+		# 初始化物品栏
+		update_inventory(player.item_counts)
 	update_ui()
+
+func update_inventory(item_counts: Dictionary):
+	# 清除旧的显示
+	for child in items_container.get_children():
+		child.queue_free()
+	displayed_items.clear()
+	
+	# 显示每个物品
+	for item_id in item_counts.keys():
+		var count = item_counts[item_id]
+		var item = ConfigManager.get_item(item_id)
+		
+		# 创建物品显示标签
+		var item_label = Label.new()
+		item_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		item_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+		
+		# 获取物品图标
+		var icon = item.get("icon", "?")
+		
+		# 如果数量大于1，显示 "图标*x"
+		if count > 1:
+			item_label.text = "%s*%d" % [icon, count]
+		else:
+			item_label.text = icon
+		
+		# 设置字体大小
+		item_label.add_theme_font_size_override("font_size", 24)
+		
+		items_container.add_child(item_label)
+		displayed_items[item_id] = item_label

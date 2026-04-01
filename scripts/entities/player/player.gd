@@ -13,6 +13,7 @@ var pickup_range: float = 50.0
 
 var weapons: Array = []
 var passive_items: Dictionary = {}
+var item_counts: Dictionary = {}
 
 var is_invincible: bool = false
 var invincibility_duration: float = 1.0
