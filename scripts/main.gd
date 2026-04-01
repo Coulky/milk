@@ -239,11 +239,17 @@ func clear_map():
 	
 	# 删除所有经验宝石
 	for child in get_tree().root.get_children():
-		if child.name == "ExperienceGem" or child.has_method("experience_value"):
+		if child.name == "ExperienceGem" or child.has_method("experience_value") or child.is_in_group("experience_gem"):
 			if is_instance_valid(child):
 				child.queue_free()
-	
-	# 删除地图边框
+		# 也可以清除其他类型的掉落物品
+		if child.is_in_group("items") or child.is_in_group("pickups") or child.has_method("pickup"):
+			if is_instance_valid(child):
+				child.queue_free()
+		# 清除敌人投射物
+		if child.is_in_group("enemy_projectiles") or child.name == "EnemyProjectile" or child.name == "EnemyProjectileSplit":
+			if is_instance_valid(child):
+				child.queue_free()
 	var map_border = get_node_or_null("MapBorder")
 	if map_border and is_instance_valid(map_border):
 		map_border.queue_free()
