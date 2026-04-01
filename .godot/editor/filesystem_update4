@@ -4,3 +4,4 @@ res://scenes/entities/player.tscn
 res://scripts/main.gd
 res://scripts/entities/player/player.gd
 res://scripts/entities/pickups/experience_gem.gd
+res://scenes/entities/experience_gem.tscn

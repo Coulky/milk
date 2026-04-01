@@ -170,6 +170,12 @@ func _physics_process(_delta):
 	velocity = input_direction * speed
 	move_and_slide()
 	
+	# 根据移动方向反转角色
+	if input_direction.x > 0:
+		sprite.scale.x = 1.0
+	elif input_direction.x < 0:
+		sprite.scale.x = -1.0
+	
 	# 限制玩家在地图边界内
 	var map_size = ConfigManager.get_map_size()
 	var map_width = map_size.get("width", 2000)
