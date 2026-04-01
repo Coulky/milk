@@ -76,22 +76,54 @@ func update_inventory(item_counts: Dictionary):
 		var count = item_counts[item_id]
 		var item = ConfigManager.get_item(item_id)
 		
-		# 创建物品显示标签
-		var item_label = Label.new()
-		item_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-		item_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-		
 		# 获取物品图标
-		var icon = item.get("icon", "?")
+		var icon = item.get("path", "?")
 		
-		# 如果数量大于1，显示 "图标*x"
-		if count > 1:
-			item_label.text = "%s*%d" % [icon, count]
+		if icon.begins_with("res://"):
+			# 如果是图片路径，创建一个水平容器来放置图片和计数
+			var item_container = HBoxContainer.new()
+			item_container.alignment = BoxContainer.ALIGNMENT_CENTER
+			
+			# 使用 AssetManager 创建 TextureRect
+			var asset_manager = preload("res://scripts/core/asset_manager.gd").new()
+			var icon_texture = asset_manager.create_texture_rect(item)
+			if icon_texture.texture:
+				icon_texture.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
+				icon_texture.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+				item_container.add_child(icon_texture)
+			else:
+				# 如果加载失败，显示默认符号
+				var fallback_label = Label.new()
+				fallback_label.text = "?"
+				fallback_label.add_theme_font_size_override("font_size", 24)
+				item_container.add_child(fallback_label)
+				items_container.add_child(item_container)
+				displayed_items[item_id] = item_container
+				continue
+			
+			# 如果数量大于1，显示计数
+			if count > 1:
+				var count_label = Label.new()
+				count_label.text = "*%d" % count
+				count_label.add_theme_font_size_override("font_size", 16)
+				item_container.add_child(count_label)
+			
+			items_container.add_child(item_container)
+			displayed_items[item_id] = item_container
 		else:
-			item_label.text = icon
-		
-		# 设置字体大小
-		item_label.add_theme_font_size_override("font_size", 24)
-		
-		items_container.add_child(item_label)
-		displayed_items[item_id] = item_label
+			# 如果是符号，显示为文本
+			var item_label = Label.new()
+			item_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+			item_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+			
+			# 如果数量大于1，显示 "图标*x"
+			if count > 1:
+				item_label.text = "%s*%d" % [icon, count]
+			else:
+				item_label.text = icon
+			
+			# 设置字体大小
+			item_label.add_theme_font_size_override("font_size", 24)
+			
+			items_container.add_child(item_label)
+			displayed_items[item_id] = item_label

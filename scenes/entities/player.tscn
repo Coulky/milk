@@ -3,10 +3,10 @@
 [ext_resource type="Script" path="res://scripts/entities/player/player.gd" id="1_player"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_body"]
-radius = 16.0
+radius = 50.0
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_hitbox"]
-radius = 14.0
+radius = 45.0
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_pickup"]
 radius = 50.0
@@ -17,10 +17,10 @@ collision_mask = 2
 script = ExtResource("1_player")
 
 [node name="Sprite" type="Label" parent="."]
-offset_left = -16.0
-offset_top = -16.0
-offset_right = 16.0
-offset_bottom = 16.0
+offset_left = -50.0
+offset_top = -50.0
+offset_right = 50.0
+offset_bottom = 50.0
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 shape = SubResource("CircleShape2D_body")

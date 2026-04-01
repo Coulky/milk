@@ -38,7 +38,8 @@ func generate_upgrades() -> Array:
 				"id": item.get("id"),
 				"name": ConfigManager.get_item_name(item.get("id")),
 				"description": ConfigManager.get_item_description(item.get("id")),
-				"symbol": item.get("icon", "I"),
+				"path": item.get("path", "I"),
+				"size": item.get("size", [50, 50]),
 				"color": "#ffffff",
 				"stats": item.get("stats", {})
 			})
@@ -67,10 +68,40 @@ func display_upgrades():
 		name_hbox.alignment = BoxContainer.ALIGNMENT_CENTER
 		vbox.add_child(name_hbox)
 		
-		var icon_label = Label.new()
-		icon_label.text = upgrade.get("symbol", "?")
-		icon_label.add_theme_font_size_override("font_size", 32)
-		name_hbox.add_child(icon_label)
+		# 处理图标
+		var icon_path = upgrade.get("path", "?")
+		if icon_path.begins_with("res://"):
+			# 如果是图片路径，使用 AssetManager 创建 TextureRect
+			var asset_manager = preload("res://scripts/core/asset_manager.gd").new()
+			var icon_texture = asset_manager.create_texture_rect(upgrade)
+			if icon_texture.texture:
+				# 创建一个容器节点来限制大小
+				var container = HBoxContainer.new()
+				var size = upgrade.get("size", [50, 50])
+				container.custom_minimum_size = Vector2(size[0], size[1])
+				container.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
+				container.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+				
+				# 将 TextureRect 添加到容器中
+				icon_texture.size_flags_horizontal = Control.SIZE_FILL
+				icon_texture.size_flags_vertical = Control.SIZE_FILL
+				container.add_child(icon_texture)
+				
+				# 将容器添加到 name_hbox
+				name_hbox.add_child(container)
+			else:
+				# 如果加载失败，显示默认符号
+				var icon_label = Label.new()
+				icon_label.text = "?"
+				icon_label.add_theme_font_size_override("font_size", 32)
+				name_hbox.add_child(icon_label)
+				continue
+		else:
+			# 如果是符号，显示为文本
+			var icon_label = Label.new()
+			icon_label.text = icon_path
+			icon_label.add_theme_font_size_override("font_size", 32)
+			name_hbox.add_child(icon_label)
 		
 		var name_label = Label.new()
 		name_label.text = upgrade.get("name", "Unknown")
@@ -92,7 +123,7 @@ func display_upgrades():
 			
 			for stat_name in stats.keys():
 				var value = stats[stat_name]
-				if value != 0:
+				if value != null and value != 0:
 					var stat_label = Label.new()
 					stat_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 					stat_label.add_theme_font_size_override("font_size", 11)
@@ -181,7 +212,7 @@ func apply_upgrade(upgrade: Dictionary):
 			# 应用属性效果
 			for stat_name in stats.keys():
 				var value = stats[stat_name]
-				if value != 0:
+				if value != null and value != 0:
 					# 根据计数叠加属性
 					var total_value = value * count
 					# 应用属性到玩家

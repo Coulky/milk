@@ -4,6 +4,7 @@ var characters_config = {}
 var enemies_config = {}
 var weapons_config = {}
 var items_config = {}
+var drops_config = {}
 var game_settings = {}
 var languages_config = {}
 
@@ -15,6 +16,7 @@ func load_all_configs():
 	enemies_config = load_json("res://configs/enemies.json")
 	weapons_config = load_json("res://configs/weapons.json")
 	items_config = load_json("res://configs/items.json")
+	drops_config = load_json("res://configs/drops.json")
 	game_settings = load_json("res://configs/game_settings.json")
 	languages_config = load_json("res://configs/languages.json")
 
@@ -226,3 +228,32 @@ func get_item_attribute_text(attribute, value):
 	var key = "item_attributes." + attribute
 	var text = get_language_text(key, attribute)
 	return text.replace("{value}", str(value))
+
+func get_drop(id):
+	return drops_config.get("drops", {}).get(id, {})
+
+func get_all_drops():
+	var all_drops = []
+	for drop_id in drops_config.get("drops", {}).keys():
+		var drop = drops_config.get("drops", {}).get(drop_id, {})
+		drop["id"] = drop_id
+		all_drops.append(drop)
+	return all_drops
+
+func get_consumable_drops():
+	var consumable_drops = []
+	for drop_id in drops_config.get("drops", {}).keys():
+		var drop = drops_config.get("drops", {}).get(drop_id, {})
+		if drop.get("type") == "consumable":
+			drop["id"] = drop_id
+			consumable_drops.append(drop)
+	return consumable_drops
+
+func get_experience_drops():
+	var experience_drops = []
+	for drop_id in drops_config.get("drops", {}).keys():
+		var drop = drops_config.get("drops", {}).get(drop_id, {})
+		if drop.get("type") == "experience":
+			drop["id"] = drop_id
+			experience_drops.append(drop)
+	return experience_drops

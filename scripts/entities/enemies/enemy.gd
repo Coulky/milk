@@ -182,6 +182,7 @@ func die():
 	GameManager.add_kill(self)
 	GameManager.unregister_enemy(self)
 	spawn_experience_gem()
+	spawn_pickup()
 	queue_free()
 
 func spawn_experience_gem():
@@ -195,6 +196,76 @@ func _spawn_experience_gem_deferred(pos: Vector2, exp_value: int):
 	gem.global_position = pos
 	gem.experience_value = exp_value
 	get_tree().root.add_child(gem)
+
+func spawn_pickup():
+	# 从配置中获取消耗品掉落信息
+	var consumable_drops = ConfigManager.get_consumable_drops()
+	
+	# 尝试掉落物品
+	for drop in consumable_drops:
+		var probability = drop.get("drop_probability", 0)
+		if randf() < probability:
+			# 使用 call_deferred 延迟创建物品，避免物理查询冲突
+			call_deferred("_spawn_pickup_deferred", drop, global_position)
+			break  # 只掉落一个物品
+
+func _spawn_pickup_deferred(drop, pos):
+	# 生成物品（直接创建，不通过 ConfigManager）
+	var pickup = Area2D.new()
+	pickup.name = drop.id
+	
+	# 创建碰撞形状
+	var collision_shape = CollisionShape2D.new()
+	var circle_shape = CircleShape2D.new()
+	circle_shape.radius = 15.0
+	collision_shape.shape = circle_shape
+	pickup.add_child(collision_shape)
+	
+	# 创建标签或纹理用于显示
+	if drop.path.begins_with("res://"):
+		# 创建 Sprite2D 节点来显示图片
+		var drop_sprite = Sprite2D.new()
+		
+		# 加载纹理
+		var texture = load(drop.path)
+		if texture:
+			drop_sprite.texture = texture
+			
+			# 根据配置的 size 调整缩放
+			if drop.has("size"):
+				var size = drop.get("size")
+				if size is Array and size.size() == 2:
+					# 计算缩放比例
+					var texture_size = texture.get_size()
+					var scale_x = size[0] / texture_size.x
+					var scale_y = size[1] / texture_size.y
+					drop_sprite.scale = Vector2(scale_x, scale_y)
+		
+		pickup.add_child(drop_sprite)
+	else:
+		# 如果是符号，显示为文本
+		var label = Label.new()
+		label.text = drop.path
+		label.add_theme_font_size_override("font_size", 24)
+		label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+		label.offset_left = -15.0
+		label.offset_top = -15.0
+		label.offset_right = 15.0
+		label.offset_bottom = 15.0
+		pickup.add_child(label)
+	
+	# 添加脚本
+	var pickup_script = preload("res://scripts/entities/pickups/consumable_pickup.gd")
+	pickup.set_script(pickup_script)
+	
+	# 设置属性
+	pickup.global_position = pos
+	pickup.set_meta("item_id", drop.id)
+	pickup.set_meta("drop_data", drop)  # 存储完整的掉落数据
+	
+	# 添加到场景
+	get_tree().root.add_child(pickup)
 
 func _on_hitbox_body_entered(body):
 	if body and is_instance_valid(body):

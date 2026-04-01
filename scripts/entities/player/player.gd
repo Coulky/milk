@@ -7,8 +7,8 @@ var character_config: Dictionary = {}
 var max_health: int = 100
 var current_health: int = 100
 var speed: float = 200.0
-var base_attack: int = 10
-var defense: int = 5
+var base_attack: float = 10.0
+var defense: float = 5.0
 var pickup_range: float = 50.0
 
 var weapons: Array = []
@@ -53,9 +53,10 @@ func setup_character():
 	base_attack = character_config.get("attack", 10)
 	defense = character_config.get("defense", 5)
 	
-	var model_path = character_config.get("model_path", "")
-	var model_width = character_config.get("model_width", 0)
-	var model_height = character_config.get("model_height", 0)
+	var model_path = character_config.get("path", "")
+	var size = character_config.get("size", [0, 0])
+	var model_width = size[0]
+	var model_height = size[1]
 	var symbol = character_config.get("symbol", "@")
 	var color = Color(character_config.get("symbol_color", "#00ff00"))
 	
@@ -207,7 +208,7 @@ func take_damage(amount: int):
 	if is_invincible:
 		return
 	
-	var actual_damage = max(1, amount - defense)
+	var actual_damage = max(1, int(amount - defense))
 	current_health -= actual_damage
 	emit_signal("health_changed", current_health, max_health)
 	GameManager.update_player_health(current_health, max_health)
@@ -221,6 +222,39 @@ func heal(amount: int):
 	current_health = min(max_health, current_health + amount)
 	emit_signal("health_changed", current_health, max_health)
 	GameManager.update_player_health(current_health, max_health)
+
+func heal_percent(percent: float):
+	# 计算恢复的生命值
+	var heal_amount = int(round(max_health * (percent / 100.0)))
+	# 应用恢复
+	current_health = min(max_health, current_health + heal_amount)
+	emit_signal("health_changed", current_health, max_health)
+	GameManager.update_player_health(current_health, max_health)
+
+func apply_buff(stat: String, value: float, _duration: float):
+	# 暂时直接应用效果，不处理持续时间
+	match stat:
+		"speed":
+			speed *= (1.0 + value)
+		"defense":
+			defense *= (1.0 + value)
+		"attack":
+			base_attack *= (1.0 + value)
+		"attack_speed":
+			# 暂时不处理攻击速度
+			pass
+		"crit_chance":
+			# 暂时不处理暴击率
+			pass
+		"mana_regen":
+			# 暂时不处理魔法恢复
+			pass
+		"skill_damage":
+			# 暂时不处理技能伤害
+			pass
+		"cooldown_reduction":
+			# 暂时不处理冷却减少
+			pass
 
 func start_invincibility():
 	is_invincible = true
@@ -239,7 +273,7 @@ func die():
 	GameManager.end_game()
 
 func get_attack_damage() -> int:
-	return base_attack
+	return int(base_attack)
 
 func get_health_info() -> Dictionary:
 	return {

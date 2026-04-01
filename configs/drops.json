@@ -1,0 +1,58 @@
+{
+  "drops": {
+    "experience_gem": {
+      "id": "experience_gem",
+      "name": {"zh_CN": "经验宝石", "en": "Experience Gem", "ja": "経験の宝石"},
+      "description": {"zh_CN": "增加经验值", "en": "Increases experience", "ja": "経験値を増加"},
+      "path": "res://assets/images/test2.png",
+      "size": [20, 20],
+      "type": "experience",
+      "drop_probability": 1.0,
+      "min_amount": 1,
+      "max_amount": 3
+    },
+    "health_potion": {
+      "id": "health_potion",
+      "name": {"zh_CN": "血瓶", "en": "Health Potion", "ja": "ヘルスポーション"},
+      "description": {"zh_CN": "恢复5%生命值", "en": "Restores 5% health", "ja": "5%のHPを回復"},
+      "path": "res://assets/images/test2.png",
+      "size": [20, 20],
+      "type": "consumable",
+      "drop_probability": 0.03,
+      "effect": {
+        "type": "heal_percent",
+        "health_percent": 5
+      }
+    },
+    "speed_potion": {
+      "id": "speed_potion",
+      "name": {"zh_CN": "速度瓶", "en": "Speed Potion", "ja": "スピードポーション"},
+      "description": {"zh_CN": "10秒内提高30%移动速度", "en": "Increases movement speed by 30% for 10 seconds", "ja": "10秒間で移動速度が30%アップ"},
+      "path": "res://assets/images/test2.png",
+      "size": [20, 20],
+      "type": "consumable",
+      "drop_probability": 0.025,
+      "effect": {
+        "type": "buff",
+        "stat": "speed",
+        "value": 0.3,
+        "duration": 10
+      }
+    },
+    "defense_potion": {
+      "id": "defense_potion",
+      "name": {"zh_CN": "防御瓶", "en": "Defense Potion", "ja": "ディフェンスポーション"},
+      "description": {"zh_CN": "10秒内提高30%防御", "en": "Increases defense by 30% for 10 seconds", "ja": "10秒間で防御力が30%アップ"},
+      "path": "res://assets/images/test2.png",
+      "size": [20, 20],
+      "type": "consumable",
+      "drop_probability": 0.025,
+      "effect": {
+        "type": "buff",
+        "stat": "defense",
+        "value": 0.3,
+        "duration": 10
+      }
+    }
+  }
+}

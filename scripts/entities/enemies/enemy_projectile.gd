@@ -12,7 +12,7 @@ var split_count: int = 3
 var has_split: bool = false
 
 var projectile_symbol: String = "•"
-var projectile_color: Color = Color.RED
+var projectile_color: Color = Color.YELLOW
 
 var sprite: Label
 
