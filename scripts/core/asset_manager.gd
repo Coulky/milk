@@ -34,21 +34,31 @@ func load_asset_texture(path: String) -> Texture2D:
 		return null
 
 # 创建纹理矩形节点
-func create_texture_rect(asset_data: Dictionary) -> TextureRect:
-	var texture_rect = TextureRect.new()
+func create_texture_rect(asset_data: Dictionary) -> Control:
+	# 创建一个容器节点来限制大小
+	var container = Control.new()
 	
-	# 设置尺寸
+	# 设置容器尺寸
 	var size = get_asset_display_size(asset_data)
-	texture_rect.custom_minimum_size = size
-	print("AssetManager: Creating texture rect with size: " + str(size))
-	
-	# 设置拉伸模式
-	texture_rect.stretch_mode = 2 # STRETCH_KEEP_ASPECT_CENTERED
+	container.custom_minimum_size = size
+	container.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
+	container.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 	
 	# 加载纹理
 	var path = asset_data.get("path", "")
 	var texture = load_asset_texture(path)
 	if texture:
-		texture_rect.texture = texture
+		# 创建 Sprite2D 节点来显示图片
+		var sprite = Sprite2D.new()
+		sprite.texture = texture
+		
+		# 根据配置的 size 调整缩放
+		var texture_size = texture.get_size()
+		var scale_x = size.x / texture_size.x
+		var scale_y = size.y / texture_size.y
+		sprite.scale = Vector2(scale_x, scale_y)
+		
+		# 将 Sprite2D 添加到容器中
+		container.add_child(sprite)
 	
-	return texture_rect
+	return container

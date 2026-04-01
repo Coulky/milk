@@ -73,22 +73,12 @@ func display_upgrades():
 		if icon_path.begins_with("res://"):
 			# 如果是图片路径，使用 AssetManager 创建 TextureRect
 			var asset_manager = preload("res://scripts/core/asset_manager.gd").new()
-			var icon_texture = asset_manager.create_texture_rect(upgrade)
-			if icon_texture.texture:
-				# 创建一个容器节点来限制大小
-				var container = HBoxContainer.new()
-				var size = upgrade.get("size", [50, 50])
-				container.custom_minimum_size = Vector2(size[0], size[1])
-				container.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
-				container.size_flags_vertical = Control.SIZE_SHRINK_CENTER
-				
-				# 将 TextureRect 添加到容器中
-				icon_texture.size_flags_horizontal = Control.SIZE_FILL
-				icon_texture.size_flags_vertical = Control.SIZE_FILL
-				container.add_child(icon_texture)
-				
-				# 将容器添加到 name_hbox
-				name_hbox.add_child(container)
+			var icon_container = asset_manager.create_texture_rect(upgrade)
+			# 检查容器中是否有纹理
+			var texture_rect = icon_container.get_child(0)
+			if texture_rect and texture_rect.texture:
+				# 直接将容器添加到 name_hbox
+				name_hbox.add_child(icon_container)
 			else:
 				# 如果加载失败，显示默认符号
 				var icon_label = Label.new()

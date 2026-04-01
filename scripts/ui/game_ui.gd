@@ -86,11 +86,12 @@ func update_inventory(item_counts: Dictionary):
 			
 			# 使用 AssetManager 创建 TextureRect
 			var asset_manager = preload("res://scripts/core/asset_manager.gd").new()
-			var icon_texture = asset_manager.create_texture_rect(item)
-			if icon_texture.texture:
-				icon_texture.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
-				icon_texture.size_flags_vertical = Control.SIZE_SHRINK_CENTER
-				item_container.add_child(icon_texture)
+			var icon_container = asset_manager.create_texture_rect(item)
+			# 检查容器中是否有纹理
+			var texture_rect = icon_container.get_child(0)
+			if texture_rect and texture_rect.texture:
+				# 直接添加容器到物品容器
+				item_container.add_child(icon_container)
 			else:
 				# 如果加载失败，显示默认符号
 				var fallback_label = Label.new()
