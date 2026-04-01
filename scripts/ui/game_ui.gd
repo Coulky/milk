@@ -3,7 +3,8 @@ extends CanvasLayer
 @onready var time_label: Label = $MarginContainer/VBoxContainer/HBoxContainer/TimeLabel
 @onready var level_label: Label = $MarginContainer/VBoxContainer/HBoxContainer2/LevelLabel
 @onready var exp_bar: ProgressBar = $MarginContainer/VBoxContainer/ExpBar
-@onready var health_bar: ProgressBar = $MarginContainer/VBoxContainer/HealthBar
+@onready var health_bar: ProgressBar = $MarginContainer/VBoxContainer/HBoxContainer4/HealthBar
+@onready var health_label: Label = $MarginContainer/VBoxContainer/HBoxContainer4/HealthLabel
 @onready var kill_label: Label = $MarginContainer/VBoxContainer/HBoxContainer3/KillLabel
 
 func _ready():
@@ -39,6 +40,7 @@ func _on_level_up(new_level: int):
 func _on_health_changed(current_health: int, max_health: int):
 	health_bar.max_value = max_health
 	health_bar.value = current_health
+	health_label.text = "%d/%d" % [current_health, max_health]
 
 func _on_game_started():
 	var player = GameManager.get_player()
@@ -46,4 +48,5 @@ func _on_game_started():
 		var health_info = player.get_health_info()
 		health_bar.max_value = health_info.max_health
 		health_bar.value = health_info.current_health
+		health_label.text = "%d/%d" % [health_info.current_health, health_info.max_health]
 	update_ui()

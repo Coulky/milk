@@ -45,11 +45,20 @@ custom_minimum_size = Vector2(0, 20)
 layout_mode = 2
 value = 50.0
 
-[node name="HealthBar" type="ProgressBar" parent="MarginContainer/VBoxContainer"]
+[node name="HBoxContainer4" type="HBoxContainer" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="HealthBar" type="ProgressBar" parent="MarginContainer/VBoxContainer/HBoxContainer4"]
 custom_minimum_size = Vector2(0, 20)
 layout_mode = 2
 max_value = 100.0
 value = 100.0
+
+[node name="HealthLabel" type="Label" parent="MarginContainer/VBoxContainer/HBoxContainer4"]
+layout_mode = 2
+text = "100/100"
+min_size = Vector2(60, 0)
+text_alignment = 2
 
 [node name="HBoxContainer3" type="HBoxContainer" parent="MarginContainer/VBoxContainer"]
 layout_mode = 2

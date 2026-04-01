@@ -45,18 +45,29 @@
         "level_label": "等级: {0}",
         "kill_label": "击杀: {0}"
       },
-      "characters": {
-        "warrior": "战士",
-        "hunter": "猎人",
-        "mage": "法师",
-        "warrior_desc": "基础角色，平衡型战士",
-        "hunter_desc": "远程攻击的猎人",
-        "mage_desc": "高攻击低防御的法师"
-      },
       "weapons": {
         "sword": "剑",
         "bow": "弓",
         "magic_orb": "魔法球"
+      },
+      "item_attributes": {
+        "max_health": "最大生命值: {value}",
+        "health_regen": "生命再生: {value}",
+        "life_steal": "生命吸取: {value}%",
+        "damage": "伤害: {value}%",
+        "melee_damage": "近战伤害: {value}",
+        "ranged_damage": "远程伤害: {value}",
+        "elemental_damage": "元素伤害: {value}",
+        "attack_speed": "攻击速度: {value}%",
+        "crit_chance": "暴击率: {value}%",
+        "range": "范围: {value}",
+        "armor": "护甲: {value}",
+        "evasion": "闪避: {value}%",
+        "speed": "速度: {value}%",
+        "experience_gain": "经验获取: {value}%",
+        "pickup_range": "拾取范围: {value}",
+        "bounce_count": "弹射次数: {value}",
+        "bounce_damage": "弹射伤害: {value}"
       }
     },
     "en": {
@@ -104,18 +115,29 @@
         "level_label": "Level: {0}",
         "kill_label": "Kills: {0}"
       },
-      "characters": {
-        "warrior": "Warrior",
-        "hunter": "Hunter",
-        "mage": "Mage",
-        "warrior_desc": "Basic character, balanced warrior",
-        "hunter_desc": "Ranged attacker",
-        "mage_desc": "High attack, low defense mage"
-      },
       "weapons": {
         "sword": "Sword",
         "bow": "Bow",
         "magic_orb": "Magic Orb"
+      },
+      "item_attributes": {
+        "max_health": "Max Health: {value}",
+        "health_regen": "Health Regen: {value}",
+        "life_steal": "Life Steal: {value}%",
+        "damage": "Damage: {value}%",
+        "melee_damage": "Melee Damage: {value}",
+        "ranged_damage": "Ranged Damage: {value}",
+        "elemental_damage": "Elemental Damage: {value}",
+        "attack_speed": "Attack Speed: {value}%",
+        "crit_chance": "Crit Chance: {value}%",
+        "range": "Range: {value}",
+        "armor": "Armor: {value}",
+        "evasion": "Evasion: {value}%",
+        "speed": "Speed: {value}%",
+        "experience_gain": "Experience Gain: {value}%",
+        "pickup_range": "Pickup Range: {value}",
+        "bounce_count": "Bounce Count: {value}",
+        "bounce_damage": "Bounce Damage: {value}"
       }
     },
     "ja": {
@@ -163,18 +185,29 @@
         "level_label": "レベル: {0}",
         "kill_label": "キル: {0}"
       },
-      "characters": {
-        "warrior": "戦士",
-        "hunter": "ハンター",
-        "mage": "魔法使い",
-        "warrior_desc": "基本キャラクター、バランスの取れた戦士",
-        "hunter_desc": "遠距離攻撃のハンター",
-        "mage_desc": "高攻撃力、低防御力の魔法使い"
-      },
       "weapons": {
         "sword": "剣",
         "bow": "弓",
         "magic_orb": "魔法の玉"
+      },
+      "item_attributes": {
+        "max_health": "最大HP: {value}",
+        "health_regen": "HP回復: {value}",
+        "life_steal": "ライフスティール: {value}%",
+        "damage": "ダメージ: {value}%",
+        "melee_damage": "近接ダメージ: {value}",
+        "ranged_damage": "遠隔ダメージ: {value}",
+        "elemental_damage": "元素ダメージ: {value}",
+        "attack_speed": "攻撃速度: {value}%",
+        "crit_chance": "クリティカル率: {value}%",
+        "range": "範囲: {value}",
+        "armor": "防御力: {value}",
+        "evasion": "回避率: {value}%",
+        "speed": "速度: {value}%",
+        "experience_gain": "経験値獲得: {value}%",
+        "pickup_range": "拾得範囲: {value}",
+        "bounce_count": "跳ね返り回数: {value}",
+        "bounce_damage": "跳ね返りダメージ: {value}"
       }
     }
   }

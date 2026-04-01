@@ -14,3 +14,6 @@ res://scripts/managers/game_manager.gd
 res://scripts/ui/character_select.gd
 res://scenes/ui/character_select.tscn
 res://scripts/managers/enemy_spawner.gd
+res://scripts/managers/config_manager.gd
+res://scripts/ui/upgrade_ui.gd
+res://scenes/ui/game_ui.tscn

@@ -23,36 +23,27 @@ func generate_upgrades() -> Array:
 	# 获取当前选择的角色ID
 	var current_character_id = GameManager.selected_character
 	
-	var all_weapons = ConfigManager.get_all_weapons()
-	var all_passive_items = ConfigManager.get_all_passive_items()
+	# 只从 items 中获取物品
+	var all_items = ConfigManager.get_all_items()
 	
-	for weapon in all_weapons:
-		# 检查武器是否为该角色专属武器，或者是通用武器
-		var exclusive_to = weapon.get("exclusive_to", null)
-		if exclusive_to == null or exclusive_to == current_character_id:
+	for item in all_items:
+		# 检查物品是否为该角色专属物品，或者是通用物品
+		var item_type = item.get("item_type", "common")
+		var item_class = item.get("class", "")
+		if item_type == "common" or item_class == current_character_id:
 			upgrades.append({
-				"type": "weapon",
-				"id": weapon.get("id"),
-				"name": weapon.get("name"),
-				"description": weapon.get("description"),
-				"symbol": weapon.get("symbol"),
-				"color": weapon.get("symbol_color")
+				"type": "item",
+				"id": item.get("id"),
+				"name": ConfigManager.get_item_name(item.get("id")),
+				"description": ConfigManager.get_item_description(item.get("id")),
+				"symbol": "I",
+				"color": "#ffffff",
+				"stats": item.get("stats", {})
 			})
-	
-	for item in all_passive_items:
-		upgrades.append({
-			"type": "passive",
-			"id": item.get("id"),
-			"name": item.get("name"),
-			"description": item.get("description"),
-			"symbol": item.get("symbol"),
-			"color": item.get("symbol_color"),
-			"effects": item.get("effects", {})
-		})
 	
 	upgrades.shuffle()
 	
-	var choice_count = ConfigManager.game_settings.get("level_up_choices", 3)
+	var choice_count = ConfigManager.get_game_setting("level_up_choices", 3)
 	return upgrades.slice(0, min(choice_count, upgrades.size()))
 
 func display_upgrades():
@@ -62,7 +53,26 @@ func display_upgrades():
 	for upgrade in available_upgrades:
 		var button = Button.new()
 		button.text = "%s - %s" % [upgrade.get("symbol", "?"), upgrade.get("name", "Unknown")]
-		button.tooltip_text = upgrade.get("description", "")
+		
+		# 构建 tooltip 文本
+		var tooltip = upgrade.get("description", "")
+		
+		# 显示物品属性（只显示非零属性）
+		if upgrade.get("type") == "item" and upgrade.has("stats"):
+			var stats = upgrade.get("stats")
+			var non_zero_stats = []
+			
+			for stat_name in stats.keys():
+				var value = stats[stat_name]
+				if value != 0:
+					non_zero_stats.append(ConfigManager.get_item_attribute_text(stat_name, value))
+			
+			if non_zero_stats.size() > 0:
+				tooltip += "\n\n属性："
+				for stat_text in non_zero_stats:
+					tooltip += "\n- " + stat_text
+		
+		button.tooltip_text = tooltip
 		
 		var style = StyleBoxFlat.new()
 		style.bg_color = Color(upgrade.get("color", "#ffffff"))
@@ -84,8 +94,22 @@ func apply_upgrade(upgrade: Dictionary):
 	if player == null:
 		return
 	
-	match upgrade.get("type"):
-		"weapon":
-			player.add_weapon(upgrade.get("id"))
-		"passive":
-			player.add_passive_item(upgrade.get("id"))
+	# 只处理物品类型的升级
+	if upgrade.get("type") == "item":
+		# 处理物品，这里可以根据物品类型执行不同的操作
+		# 例如，添加到物品栏或者直接使用
+		var item_id = upgrade.get("id")
+		var item = ConfigManager.get_item(item_id)
+		if item.has("effect"):
+			# 处理物品效果
+			var effect = item.get("effect")
+			match effect.get("type"):
+				"heal":
+					player.heal(effect.get("value", 0))
+				"mana":
+					# 暂时不处理魔法值，因为玩家脚本中没有相关属性
+					pass
+				"heal_mana":
+					player.heal(effect.get("health_value", 0))
+					# 暂时不处理魔法值，因为玩家脚本中没有相关属性
+					pass
