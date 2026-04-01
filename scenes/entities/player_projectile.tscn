@@ -1,11 +1,11 @@
-[gd_scene load_steps=3 format=3 uid="uid://projectile_scene"]
+[gd_scene load_steps=3 format=3 uid="uid://player_projectile_scene"]
 
-[ext_resource type="Script" path="res://scripts/entities/weapons/projectile.gd" id="1_projectile"]
+[ext_resource type="Script" path="res://scripts/entities/weapons/player_projectile.gd" id="1_projectile"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_projectile"]
 radius = 8.0
 
-[node name="Projectile" type="Area2D"]
+[node name="PlayerProjectile" type="Area2D"]
 collision_layer = 8
 collision_mask = 2
 script = ExtResource("1_projectile")

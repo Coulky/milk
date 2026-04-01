@@ -144,7 +144,7 @@ func instant_attack():
 		create_lightning_effect(enemy.global_position)
 
 func create_projectile() -> Node2D:
-	var projectile_scene = preload("res://scenes/entities/projectile.tscn")
+	var projectile_scene = preload("res://scenes/entities/player_projectile.tscn")
 	return projectile_scene.instantiate()
 
 func create_lightning_effect(_pos: Vector2):
