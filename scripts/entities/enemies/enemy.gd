@@ -13,6 +13,8 @@ var attack_range: float = 50.0
 var attack_speed: float = 1.0
 var attack_timer: float = 0.0
 var projectile_type: String = "normal"
+var projectile_symbol: String = "•"
+var projectile_color: Color = Color.RED
 var split_distance: float = 150.0
 var split_count: int = 3
 
@@ -51,6 +53,9 @@ func setup_enemy():
 	attack_speed = enemy_config.get("attack_speed", 1.0)
 	attack_timer = 0.0
 	projectile_type = enemy_config.get("projectile_type", "normal")
+	projectile_symbol = enemy_config.get("projectile_symbol", "•")
+	var proj_color_str = enemy_config.get("projectile_color", "#ff0000")
+	projectile_color = Color(proj_color_str)
 	split_distance = enemy_config.get("split_distance", 150.0)
 	split_count = enemy_config.get("split_count", 3)
 	
@@ -108,8 +113,11 @@ func perform_attack():
 		return
 	
 	if attack_type == "melee":
-		if hitbox:
-			pass
+		# 近战攻击：检查是否在攻击范围内
+		var distance_to_target = global_position.distance_to(target.global_position)
+		if distance_to_target <= attack_range + 20:
+			if target.has_method("take_damage"):
+				target.take_damage(damage)
 	else:
 		shoot_projectile()
 
@@ -128,23 +136,21 @@ func shoot_projectile():
 	# 创建碰撞形状
 	var collision_shape = CollisionShape2D.new()
 	var circle_shape = CircleShape2D.new()
-	circle_shape.radius = 8.0
+	circle_shape.radius = 12.0
 	collision_shape.shape = circle_shape
 	projectile.add_child(collision_shape)
 	
 	# 创建标签用于显示
 	var label = Label.new()
-	label.text = "•"
-	var proj_color = Color.RED
-	if projectile_type == "split":
-		proj_color = Color.MAGENTA
-	label.add_theme_color_override("font_color", proj_color)
-	label.add_theme_font_size_override("font_size", 16)
+	label.text = projectile_symbol
+	label.add_theme_color_override("font_color", projectile_color)
+	label.add_theme_font_size_override("font_size", 24)
 	label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	label.offset_left = -8.0
-	label.offset_top = -8.0
-	label.offset_right = 8.0
-	label.offset_bottom = 8.0
+	label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	label.offset_left = -12.0
+	label.offset_top = -12.0
+	label.offset_right = 12.0
+	label.offset_bottom = 12.0
 	projectile.add_child(label)
 	
 	# 添加脚本
@@ -154,12 +160,13 @@ func shoot_projectile():
 	# 设置属性
 	projectile.global_position = global_position
 	projectile.damage = damage
-	projectile.speed = 300.0
+	projectile.speed = 250.0
 	projectile.direction = direction
 	projectile.projectile_type = projectile_type
 	projectile.split_distance = split_distance
 	projectile.split_count = split_count
-	projectile.projectile_color = proj_color
+	projectile.projectile_symbol = projectile_symbol
+	projectile.projectile_color = projectile_color
 	
 	# 添加到场景
 	get_parent().add_child(projectile)
@@ -190,6 +197,7 @@ func _spawn_experience_gem_deferred(pos: Vector2, exp: int):
 	get_tree().root.add_child(gem)
 
 func _on_hitbox_body_entered(body):
-	if body.is_in_group("player") and attack_type == "melee":
-		if body.has_method("take_damage"):
-			body.take_damage(damage)
+	if body and is_instance_valid(body):
+		if body.is_in_group("player") and attack_type == "melee":
+			if body.has_method("take_damage"):
+				body.take_damage(damage)

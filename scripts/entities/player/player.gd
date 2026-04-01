@@ -17,6 +17,8 @@ var passive_items: Dictionary = {}
 var is_invincible: bool = false
 var invincibility_duration: float = 1.0
 
+var sprite_2d_ref: Sprite2D = null
+
 signal health_changed(current_health, max_health)
 signal player_died
 
@@ -66,6 +68,9 @@ func setup_character():
 			sprite_2d = Sprite2D.new()
 			sprite_2d.name = "Sprite2D"
 			add_child(sprite_2d)
+		
+		# 保存 Sprite2D 的引用
+		sprite_2d_ref = sprite_2d
 		
 		# 加载图片
 		var texture = load(model_path)
@@ -172,9 +177,15 @@ func _physics_process(_delta):
 	
 	# 根据移动方向反转角色
 	if input_direction.x > 0:
-		sprite.scale.x = 1.0
+		if sprite:
+			sprite.scale.x = -1.0
+		if sprite_2d_ref:
+			sprite_2d_ref.scale.x = -abs(sprite_2d_ref.scale.x)
 	elif input_direction.x < 0:
-		sprite.scale.x = -1.0
+		if sprite:
+			sprite.scale.x = 1.0
+		if sprite_2d_ref:
+			sprite_2d_ref.scale.x = abs(sprite_2d_ref.scale.x)
 	
 	# 限制玩家在地图边界内
 	var map_size = ConfigManager.get_map_size()
@@ -240,5 +251,12 @@ func _on_pickup_area_body_entered(body):
 		body.collect(self)
 
 func _on_hitbox_body_entered(body):
-	if body.has_method("damage") or "damage" in body:
-		take_damage(body.damage)
+	if body and is_instance_valid(body):
+		# 检查是否是敌人投射物
+		if body.has_method("is_in_group") and body.is_in_group("enemy_projectiles"):
+			if "damage" in body:
+				take_damage(body.damage)
+		# 检查是否是敌人（近战攻击）
+		elif body.has_method("is_in_group") and body.is_in_group("enemies"):
+			if "damage" in body:
+				take_damage(body.damage)

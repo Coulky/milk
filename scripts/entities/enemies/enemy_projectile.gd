@@ -78,20 +78,21 @@ func create_child_projectile(new_direction: Vector2):
 	# 创建碰撞形状
 	var collision_shape = CollisionShape2D.new()
 	var circle_shape = CircleShape2D.new()
-	circle_shape.radius = 6.0
+	circle_shape.radius = 10.0
 	collision_shape.shape = circle_shape
 	projectile.add_child(collision_shape)
 	
 	# 创建标签用于显示
 	var label = Label.new()
-	label.text = "•"
-	label.add_theme_color_override("font_color", Color.MAGENTA)
-	label.add_theme_font_size_override("font_size", 12)
+	label.text = "◉"
+	label.add_theme_color_override("font_color", projectile_color)
+	label.add_theme_font_size_override("font_size", 20)
 	label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	label.offset_left = -6.0
-	label.offset_top = -6.0
-	label.offset_right = 6.0
-	label.offset_bottom = 6.0
+	label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	label.offset_left = -10.0
+	label.offset_top = -10.0
+	label.offset_right = 10.0
+	label.offset_bottom = 10.0
 	projectile.add_child(label)
 	
 	# 添加脚本
