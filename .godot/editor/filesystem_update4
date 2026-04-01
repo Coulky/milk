@@ -1,3 +1,6 @@
-res://scripts/ui/main_menu.gd
-res://scripts/managers/config_manager.gd
-res://configs/characters.json
+res://scripts/entities/enemies/enemy_projectile.gd
+res://scripts/entities/enemies/enemy.gd
+res://scenes/entities/player.tscn
+res://scripts/main.gd
+res://scripts/entities/player/player.gd
+res://scripts/entities/pickups/experience_gem.gd

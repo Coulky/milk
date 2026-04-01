@@ -94,24 +94,73 @@ func create_pause_dialog():
 	get_tree().root.add_child(pause_dialog)
 	pause_dialog.hide()
 
+func _process(_delta):
+	if player and is_instance_valid(player):
+		if has_node("Camera2D"):
+			var camera = $Camera2D
+			
+			# 获取地图尺寸
+			var map_size = ConfigManager.get_map_size()
+			var map_width = map_size.get("width", 2000)
+			var map_height = map_size.get("height", 2000)
+			
+			# 获取视口大小
+			var viewport_size = get_viewport_rect().size
+			
+			# 计算相机的最小和最大位置
+			var min_camera_x = viewport_size.x / 2
+			var max_camera_x = map_width - viewport_size.x / 2
+			var min_camera_y = viewport_size.y / 2
+			var max_camera_y = map_height - viewport_size.y / 2
+			
+			# 计算目标相机位置，并限制在边界内
+			var target_camera_x = clamp(player.global_position.x, min_camera_x, max_camera_x)
+			var target_camera_y = clamp(player.global_position.y, min_camera_y, max_camera_y)
+			
+			# 设置相机位置
+			camera.global_position = Vector2(target_camera_x, target_camera_y)
+
 func start_game():
 	GameManager.start_game()
 	
 	# 计算地图中心位置（2000x2000的正方形）
 	var map_center = Vector2(1000, 1000)
 	
+	# 创建地图边框标记
+	create_map_border()
+	
 	player = player_scene.instantiate()
 	player.global_position = map_center
 	add_child(player)
 	
-	# 锁定相机视角在地图中央
+	# 设置相机跟随玩家
 	if has_node("Camera2D"):
 		var camera = $Camera2D
-		camera.position = map_center
+		camera.global_position = player.global_position
 		# 设为当前相机
 		camera.make_current()
 	
 	game_ui.visible = true
+
+func create_map_border():
+	var map_size = ConfigManager.get_map_size()
+	var map_width = map_size.get("width", 2000)
+	var map_height = map_size.get("height", 2000)
+	
+	# 创建 Line2D 来绘制边框
+	var border_line = Line2D.new()
+	border_line.name = "MapBorder"
+	border_line.width = 4.0
+	border_line.default_color = Color.GRAY
+	border_line.closed = true
+	
+	# 添加四个角的点
+	border_line.add_point(Vector2(0, 0))
+	border_line.add_point(Vector2(map_width, 0))
+	border_line.add_point(Vector2(map_width, map_height))
+	border_line.add_point(Vector2(0, map_height))
+	
+	add_child(border_line)
 
 func _on_level_up(_new_level: int):
 	upgrade_ui.show_upgrades()

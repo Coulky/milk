@@ -8,6 +8,13 @@ var current_health: int = 20
 var speed: float = 80.0
 var damage: int = 5
 var experience_value: int = 1
+var attack_type: String = "melee"
+var attack_range: float = 50.0
+var attack_speed: float = 1.0
+var attack_timer: float = 0.0
+var projectile_type: String = "normal"
+var split_distance: float = 150.0
+var split_count: int = 3
 
 var target: Node2D = null
 
@@ -30,11 +37,22 @@ func load_enemy_config():
 		return
 
 func setup_enemy():
-	max_health = enemy_config.get("max_health", 20)
+	# 计算增强系数 - 每3分钟增强一次
+	var game_time_minutes = GameManager.game_time / 60.0
+	var enhancement_multiplier = 1.0 + (game_time_minutes / 3.0) * 0.2
+	
+	max_health = int(enemy_config.get("max_health", 20) * enhancement_multiplier)
 	current_health = max_health
-	speed = enemy_config.get("speed", 80)
-	damage = enemy_config.get("damage", 5)
-	experience_value = enemy_config.get("experience", 1)
+	speed = enemy_config.get("speed", 80) * (1.0 + (game_time_minutes / 3.0) * 0.1)
+	damage = int(enemy_config.get("damage", 5) * enhancement_multiplier)
+	experience_value = int(enemy_config.get("experience", 1) * enhancement_multiplier)
+	attack_type = enemy_config.get("attack_type", "melee")
+	attack_range = enemy_config.get("attack_range", 50.0)
+	attack_speed = enemy_config.get("attack_speed", 1.0)
+	attack_timer = 0.0
+	projectile_type = enemy_config.get("projectile_type", "normal")
+	split_distance = enemy_config.get("split_distance", 150.0)
+	split_count = enemy_config.get("split_count", 3)
 	
 	var symbol = enemy_config.get("symbol", "Z")
 	var color = Color(enemy_config.get("symbol_color", "#00ff00"))
@@ -51,11 +69,31 @@ func _physics_process(_delta):
 		return
 	
 	update_target()
-	move_towards_target()
+	move_and_attack(_delta)
 
 func update_target():
 	if target == null or not is_instance_valid(target):
 		target = GameManager.get_player()
+
+func move_and_attack(delta):
+	if target == null:
+		return
+	
+	var distance_to_target = global_position.distance_to(target.global_position)
+	
+	if attack_type == "melee":
+		move_towards_target()
+	else:
+		if distance_to_target > attack_range:
+			move_towards_target()
+		else:
+			velocity = Vector2.ZERO
+			move_and_slide()
+	
+	attack_timer += delta
+	if attack_timer >= attack_speed:
+		attack_timer = 0.0
+		perform_attack()
 
 func move_towards_target():
 	if target == null:
@@ -64,6 +102,67 @@ func move_towards_target():
 	var direction = (target.global_position - global_position).normalized()
 	velocity = direction * speed
 	move_and_slide()
+
+func perform_attack():
+	if target == null:
+		return
+	
+	if attack_type == "melee":
+		if hitbox:
+			pass
+	else:
+		shoot_projectile()
+
+func shoot_projectile():
+	if target == null:
+		return
+	
+	var direction = (target.global_position - global_position).normalized()
+	
+	# 直接在代码中创建投射物，不使用预加载场景
+	var projectile = Area2D.new()
+	projectile.name = "EnemyProjectile"
+	projectile.collision_layer = 8
+	projectile.collision_mask = 1
+	
+	# 创建碰撞形状
+	var collision_shape = CollisionShape2D.new()
+	var circle_shape = CircleShape2D.new()
+	circle_shape.radius = 8.0
+	collision_shape.shape = circle_shape
+	projectile.add_child(collision_shape)
+	
+	# 创建标签用于显示
+	var label = Label.new()
+	label.text = "•"
+	var proj_color = Color.RED
+	if projectile_type == "split":
+		proj_color = Color.MAGENTA
+	label.add_theme_color_override("font_color", proj_color)
+	label.add_theme_font_size_override("font_size", 16)
+	label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	label.offset_left = -8.0
+	label.offset_top = -8.0
+	label.offset_right = 8.0
+	label.offset_bottom = 8.0
+	projectile.add_child(label)
+	
+	# 添加脚本
+	var projectile_script = preload("res://scripts/entities/enemies/enemy_projectile.gd")
+	projectile.set_script(projectile_script)
+	
+	# 设置属性
+	projectile.global_position = global_position
+	projectile.damage = damage
+	projectile.speed = 300.0
+	projectile.direction = direction
+	projectile.projectile_type = projectile_type
+	projectile.split_distance = split_distance
+	projectile.split_count = split_count
+	projectile.projectile_color = proj_color
+	
+	# 添加到场景
+	get_parent().add_child(projectile)
 
 func take_damage(amount: int):
 	current_health -= amount
@@ -79,16 +178,13 @@ func die():
 	queue_free()
 
 func spawn_experience_gem():
-	# 使用 call_deferred 来避免在物理查询刷新期间修改场景树
-	call_deferred("_spawn_experience_gem_deferred")
-
-func _spawn_experience_gem_deferred():
 	var gem_scene = preload("res://scenes/entities/experience_gem.tscn")
 	var gem = gem_scene.instantiate()
 	gem.global_position = global_position
 	gem.experience_value = experience_value
-	get_parent().add_child(gem)
+	get_tree().root.add_child(gem)
 
 func _on_hitbox_body_entered(body):
-	if body.is_in_group("player"):
-		body.take_damage(damage)
+	if body.is_in_group("player") and attack_type == "melee":
+		if body.has_method("take_damage"):
+			body.take_damage(damage)

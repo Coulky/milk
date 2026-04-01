@@ -10,7 +10,22 @@
       "speed": 80,
       "damage": 5,
       "experience": 1,
+      "attack_type": "melee",
       "spawn_weight": 10,
+      "min_wave": 1
+    },
+    {
+      "id": "bat",
+      "name": "蝙蝠",
+      "symbol": "B",
+      "symbol_color": "#ff00ff",
+      "model_path": "",
+      "max_health": 10,
+      "speed": 150,
+      "damage": 3,
+      "experience": 1,
+      "attack_type": "melee",
+      "spawn_weight": 12,
       "min_wave": 1
     },
     {
@@ -23,21 +38,26 @@
       "speed": 100,
       "damage": 8,
       "experience": 2,
+      "attack_type": "melee",
       "spawn_weight": 8,
-      "min_wave": 2
+      "min_wave": 1
     },
     {
-      "id": "bat",
-      "name": "蝙蝠",
-      "symbol": "B",
-      "symbol_color": "#ff00ff",
+      "id": "archer",
+      "name": "弓箭手",
+      "symbol": "A",
+      "symbol_color": "#88ff00",
       "model_path": "",
-      "max_health": 10,
-      "speed": 150,
-      "damage": 3,
-      "experience": 1,
-      "spawn_weight": 12,
-      "min_wave": 1
+      "max_health": 25,
+      "speed": 60,
+      "damage": 10,
+      "experience": 3,
+      "attack_type": "ranged",
+      "attack_range": 300,
+      "attack_speed": 2.0,
+      "projectile_type": "normal",
+      "spawn_weight": 6,
+      "min_wave": 2
     },
     {
       "id": "ghost",
@@ -49,8 +69,28 @@
       "speed": 90,
       "damage": 12,
       "experience": 5,
+      "attack_type": "melee",
       "spawn_weight": 5,
       "min_wave": 3
+    },
+    {
+      "id": "mage_enemy",
+      "name": "法师",
+      "symbol": "M",
+      "symbol_color": "#ff00ff",
+      "model_path": "",
+      "max_health": 35,
+      "speed": 50,
+      "damage": 15,
+      "experience": 4,
+      "attack_type": "ranged",
+      "attack_range": 350,
+      "attack_speed": 2.5,
+      "projectile_type": "split",
+      "split_distance": 150,
+      "split_count": 3,
+      "spawn_weight": 4,
+      "min_wave": 4
     },
     {
       "id": "demon",
@@ -62,6 +102,7 @@
       "speed": 70,
       "damage": 25,
       "experience": 20,
+      "attack_type": "melee",
       "spawn_weight": 2,
       "min_wave": 5
     }

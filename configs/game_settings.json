@@ -21,17 +21,22 @@
     },
     {
       "time": 60,
-      "enemy_types": ["zombie", "bat", "skeleton"],
+      "enemy_types": ["zombie", "bat", "skeleton", "archer"],
       "spawn_multiplier": 1.2
     },
     {
       "time": 180,
-      "enemy_types": ["zombie", "bat", "skeleton", "ghost"],
+      "enemy_types": ["zombie", "bat", "skeleton", "archer", "ghost"],
       "spawn_multiplier": 1.5
     },
     {
       "time": 300,
-      "enemy_types": ["zombie", "bat", "skeleton", "ghost", "demon"],
+      "enemy_types": ["zombie", "bat", "skeleton", "archer", "ghost", "mage_enemy"],
+      "spawn_multiplier": 1.8
+    },
+    {
+      "time": 480,
+      "enemy_types": ["zombie", "bat", "skeleton", "archer", "ghost", "mage_enemy", "demon"],
       "spawn_multiplier": 2.0
     }
   ]

@@ -34,6 +34,8 @@ func _ready():
 	setup_character()
 	add_starting_weapons()
 	GameManager.register_player(self)
+	# 初始化时更新血条
+	GameManager.update_player_health(current_health, max_health)
 
 func load_character_config():
 	character_config = ConfigManager.get_character(character_id)
@@ -167,6 +169,15 @@ func _physics_process(_delta):
 	var input_direction = get_input_direction()
 	velocity = input_direction * speed
 	move_and_slide()
+	
+	# 限制玩家在地图边界内
+	var map_size = ConfigManager.get_map_size()
+	var map_width = map_size.get("width", 2000)
+	var map_height = map_size.get("height", 2000)
+	
+	# 确保玩家不会走出地图
+	global_position.x = clamp(global_position.x, 16, map_width - 16)
+	global_position.y = clamp(global_position.y, 16, map_height - 16)
 
 func get_input_direction() -> Vector2:
 	var direction = Vector2.ZERO
@@ -212,6 +223,16 @@ func die():
 func get_attack_damage() -> int:
 	return base_attack
 
+func get_health_info() -> Dictionary:
+	return {
+		"current_health": current_health,
+		"max_health": max_health
+	}
+
 func _on_pickup_area_body_entered(body):
 	if body.is_in_group("experience_gem"):
 		body.collect(self)
+
+func _on_hitbox_body_entered(body):
+	if body.has_method("damage") or "damage" in body:
+		take_damage(body.damage)

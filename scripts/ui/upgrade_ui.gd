@@ -20,18 +20,24 @@ func show_upgrades():
 func generate_upgrades() -> Array:
 	var upgrades = []
 	
+	# 获取当前选择的角色ID
+	var current_character_id = GameManager.selected_character
+	
 	var all_weapons = ConfigManager.get_all_weapons()
 	var all_passive_items = ConfigManager.get_all_passive_items()
 	
 	for weapon in all_weapons:
-		upgrades.append({
-			"type": "weapon",
-			"id": weapon.get("id"),
-			"name": weapon.get("name"),
-			"description": weapon.get("description"),
-			"symbol": weapon.get("symbol"),
-			"color": weapon.get("symbol_color")
-		})
+		# 检查武器是否为该角色专属武器，或者是通用武器
+		var exclusive_to = weapon.get("exclusive_to", null)
+		if exclusive_to == null or exclusive_to == current_character_id:
+			upgrades.append({
+				"type": "weapon",
+				"id": weapon.get("id"),
+				"name": weapon.get("name"),
+				"description": weapon.get("description"),
+				"symbol": weapon.get("symbol"),
+				"color": weapon.get("symbol_color")
+			})
 	
 	for item in all_passive_items:
 		upgrades.append({

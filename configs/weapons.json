@@ -3,7 +3,7 @@
     {
       "id": "sword",
       "name": "剑",
-      "description": "近战武器，攻击周围敌人",
+      "description": "近战武器，攻击周围敌人，高穿透",
       "type": "melee",
       "symbol": "/",
       "symbol_color": "#ffffff",
@@ -14,6 +14,7 @@
       "projectile_count": 1,
       "projectile_speed": 0,
       "piercing": 3,
+      "exclusive_to": "warrior",
       "evolution": {
         "required_item": "armor",
         "evolves_to": "holy_sword"
@@ -22,7 +23,7 @@
     {
       "id": "bow",
       "name": "弓",
-      "description": "远程武器，发射弓箭",
+      "description": "远程武器，发射弓箭，高射程",
       "type": "projectile",
       "symbol": "|",
       "symbol_color": "#88ff88",
@@ -33,15 +34,16 @@
       "projectile_count": 1,
       "projectile_speed": 600,
       "piercing": 1,
+      "exclusive_to": "hunter",
       "evolution": {
         "required_item": "quiver",
         "evolves_to": "holy_bow"
       }
     },
     {
-      "id": "magic_orb",
-      "name": "魔法球",
-      "description": "发射追踪敌人的魔法球",
+      "id": "wand",
+      "name": "魔杖",
+      "description": "追踪武器，发射追踪敌人的魔法球",
       "type": "projectile",
       "symbol": "o",
       "symbol_color": "#00ffff",
@@ -53,6 +55,7 @@
       "projectile_speed": 400,
       "piercing": 1,
       "homing": true,
+      "exclusive_to": "mage",
       "evolution": {
         "required_item": "spellbook",
         "evolves_to": "chaos_orb"
@@ -72,6 +75,7 @@
       "projectile_count": 1,
       "projectile_speed": 0,
       "piercing": 999,
+      "exclusive_to": null,
       "evolution": {
         "required_item": "candle",
         "evolves_to": "hellfire"
@@ -91,6 +95,7 @@
       "projectile_count": 2,
       "projectile_speed": 0,
       "piercing": 1,
+      "exclusive_to": null,
       "evolution": {
         "required_item": "magnet",
         "evolves_to": "thunder_storm"

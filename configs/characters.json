@@ -45,7 +45,7 @@
 	  "speed": 180,
 	  "attack": 20,
 	  "defense": 2,
-	  "starting_weapons": ["magic_orb"],
+	  "starting_weapons": ["wand"],
 	  "unlock_condition": {
 		"type": "kill_enemies",
 		"value": 1000

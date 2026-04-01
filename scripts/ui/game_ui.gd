@@ -37,6 +37,9 @@ func _on_health_changed(current_health: int, max_health: int):
 	health_bar.value = current_health
 
 func _on_game_started():
+	var player = GameManager.get_player()
+	if player != null and player.has_method("get_health_info"):
+		var health_info = player.get_health_info()
+		health_bar.max_value = health_info.max_health
+		health_bar.value = health_info.current_health
 	update_ui()
-	health_bar.max_value = 100
-	health_bar.value = 100
