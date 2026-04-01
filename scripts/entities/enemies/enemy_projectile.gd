@@ -60,7 +60,7 @@ func split_projectile():
 	var angle_step = deg_to_rad(30)
 	
 	for i in range(split_count):
-		var offset_angle = (i - (split_count - 1) / 2) * angle_step
+		var offset_angle = (i - float(split_count - 1) / 2.0) * angle_step
 		var new_angle = base_angle + offset_angle
 		var new_direction = Vector2(cos(new_angle), sin(new_angle))
 		
@@ -101,7 +101,7 @@ func create_child_projectile(new_direction: Vector2):
 	
 	# 设置属性
 	projectile.global_position = global_position
-	projectile.damage = damage / 2
+	projectile.damage = int(float(damage) / 2.0)
 	projectile.speed = speed * 1.2
 	projectile.direction = new_direction
 	projectile.projectile_type = "normal"

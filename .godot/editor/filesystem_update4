@@ -5,3 +5,8 @@ res://scripts/main.gd
 res://scripts/entities/player/player.gd
 res://scripts/entities/pickups/experience_gem.gd
 res://scenes/entities/experience_gem.tscn
+res://scripts/ui/game_ui.gd
+res://scenes/ui/death_menu.tscn
+res://scenes/ui/pause_menu.tscn
+res://scripts/ui/death_menu.gd
+res://scripts/ui/pause_menu.gd

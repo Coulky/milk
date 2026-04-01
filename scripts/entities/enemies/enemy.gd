@@ -189,11 +189,11 @@ func spawn_experience_gem():
 	var saved_experience = experience_value
 	call_deferred("_spawn_experience_gem_deferred", saved_position, saved_experience)
 
-func _spawn_experience_gem_deferred(pos: Vector2, exp: int):
+func _spawn_experience_gem_deferred(pos: Vector2, exp_value: int):
 	var gem_scene = preload("res://scenes/entities/experience_gem.tscn")
 	var gem = gem_scene.instantiate()
 	gem.global_position = pos
-	gem.experience_value = exp
+	gem.experience_value = exp_value
 	get_tree().root.add_child(gem)
 
 func _on_hitbox_body_entered(body):

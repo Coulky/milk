@@ -27,6 +27,8 @@ func create_pause_dialog():
 	pause_dialog.process_mode = Node.PROCESS_MODE_ALWAYS
 	pause_dialog.title = "游戏暂停"
 	pause_dialog.min_size = Vector2(300, 200)
+	# 确保对话框居中
+	pause_dialog.unresizable = true
 	
 	# 清除默认的OK按钮
 	for child in pause_dialog.get_children():
@@ -199,5 +201,9 @@ func _input(event: InputEvent):
 func show_pause_menu():
 	# 暂停游戏
 	GameManager.pause_game()
+	# 确保对话框居中
+	var viewport_size = Vector2(get_viewport_rect().size)
+	var dialog_size = Vector2(pause_dialog.min_size)
+	pause_dialog.position = (viewport_size - dialog_size) / 2
 	# 显示预创建的暂停菜单
 	pause_dialog.show()
