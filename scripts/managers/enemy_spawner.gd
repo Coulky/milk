@@ -90,3 +90,8 @@ func get_spawn_position(player_pos: Vector2) -> Vector2:
 	spawn_pos.y = clamp(spawn_pos.y, 0, map_size.get("height", 4000))
 	
 	return spawn_pos
+
+func reset():
+	spawn_timer = 0.0
+	current_spawn_rate = ConfigManager.get_game_setting("base_spawn_rate", 2.0)
+	current_wave_index = 0

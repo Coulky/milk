@@ -57,6 +57,26 @@ func end_game():
 	is_game_running = false
 	emit_signal("game_over")
 
+func reset_game():
+	# 先清空所有敌人
+	for enemy in enemies:
+		if enemy and is_instance_valid(enemy):
+			enemy.queue_free()
+	
+	is_game_running = false
+	is_paused = false
+	game_time = 0.0
+	kill_count = 0
+	total_experience = 0
+	current_level = 1
+	experience_to_next_level = ConfigManager.get_game_setting("level_up_base_exp", 10)
+	player = null
+	enemies = []
+	experience_gems = []
+	# 确保场景树不暂停
+	if get_tree():
+		get_tree().paused = false
+
 func update_player_health(current_health: int, max_health: int):
 	emit_signal("health_changed", current_health, max_health)
 

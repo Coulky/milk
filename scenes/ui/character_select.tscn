@@ -46,15 +46,15 @@ layout_mode = 2
 
 [node name="WarriorButton" type="Button" parent="VBoxContainer/HBoxContainer"]
 layout_mode = 2
-text = "战士\n[剑]"
+text = "战士"
 
 [node name="HunterButton" type="Button" parent="VBoxContainer/HBoxContainer"]
 layout_mode = 2
-text = "猎人\n[弓]"
+text = "猎人"
 
 [node name="MageButton" type="Button" parent="VBoxContainer/HBoxContainer"]
 layout_mode = 2
-text = "法师\n[法杖]"
+text = "法师"
 
 [node name="BackButton" type="Button" parent="VBoxContainer"]
 layout_mode = 2

@@ -29,6 +29,11 @@
         "restart": "重新开始",
         "exit": "退出"
       },
+      "death_menu": {
+        "title": "你已经死亡",
+        "restart": "重新开始",
+        "exit": "退出"
+      },
       "game_over": {
         "title": "游戏结束！",
         "restart": "按 R 重新开始"
@@ -36,7 +41,9 @@
       "ui": {
         "time": "时间",
         "level": "等级",
-        "kill": "击杀"
+        "kill": "击杀",
+        "level_label": "等级: {0}",
+        "kill_label": "击杀: {0}"
       },
       "characters": {
         "warrior": "战士",
@@ -81,6 +88,11 @@
         "restart": "Restart",
         "exit": "Exit"
       },
+      "death_menu": {
+        "title": "You Are Dead",
+        "restart": "Restart",
+        "exit": "Exit"
+      },
       "game_over": {
         "title": "Game Over!",
         "restart": "Press R to restart"
@@ -88,7 +100,9 @@
       "ui": {
         "time": "Time",
         "level": "Level",
-        "kill": "Kills"
+        "kill": "Kills",
+        "level_label": "Level: {0}",
+        "kill_label": "Kills: {0}"
       },
       "characters": {
         "warrior": "Warrior",
@@ -133,6 +147,11 @@
         "restart": "再スタート",
         "exit": "終了"
       },
+      "death_menu": {
+        "title": "あなたは死亡しました",
+        "restart": "再スタート",
+        "exit": "終了"
+      },
       "game_over": {
         "title": "ゲームオーバー！",
         "restart": "Rキーを押して再スタート"
@@ -140,7 +159,9 @@
       "ui": {
         "time": "時間",
         "level": "レベル",
-        "kill": "キル"
+        "kill": "キル",
+        "level_label": "レベル: {0}",
+        "kill_label": "キル: {0}"
       },
       "characters": {
         "warrior": "戦士",

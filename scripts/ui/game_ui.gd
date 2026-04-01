@@ -19,8 +19,11 @@ func _process(_delta):
 		time_label.text = GameManager.get_game_time_formatted()
 
 func update_ui():
-	level_label.text = "等级: %d" % GameManager.current_level
-	kill_label.text = "击杀: %d" % GameManager.kill_count
+	var level_text = ConfigManager.get_language_text("ui.level_label", "等级: {0}")
+	level_label.text = level_text.format([GameManager.current_level])
+	
+	var kill_text = ConfigManager.get_language_text("ui.kill_label", "击杀: {0}")
+	kill_label.text = kill_text.format([GameManager.kill_count])
 	
 	var exp_percent = float(GameManager.total_experience) / float(GameManager.experience_to_next_level) * 100
 	exp_bar.value = exp_percent
@@ -29,7 +32,8 @@ func _on_experience_gained(_amount: int):
 	update_ui()
 
 func _on_level_up(new_level: int):
-	level_label.text = "等级: %d" % new_level
+	var level_text = ConfigManager.get_language_text("ui.level_label", "等级: {0}")
+	level_label.text = level_text.format([new_level])
 	exp_bar.value = 0
 
 func _on_health_changed(current_health: int, max_health: int):

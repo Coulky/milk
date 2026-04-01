@@ -10,12 +10,16 @@ var player: CharacterBody2D = null
 
 # 暂停菜单对话框
 var pause_dialog: AcceptDialog
+# 死亡菜单对话框
+var death_dialog: AcceptDialog
 
 func _ready():
 	GameManager.connect("level_up", _on_level_up)
 	GameManager.connect("game_over", _on_game_over)
 	# 预创建暂停菜单
 	create_pause_dialog()
+	# 预创建死亡菜单
+	create_death_dialog()
 	# 设置 process_mode 为 ALWAYS，确保在场景树暂停时仍能响应输入
 	process_mode = Node.PROCESS_MODE_ALWAYS
 	start_game()
@@ -25,7 +29,7 @@ func create_pause_dialog():
 	pause_dialog = AcceptDialog.new()
 	# 设置 process_mode 为 ALWAYS，确保在场景树暂停时仍能响应
 	pause_dialog.process_mode = Node.PROCESS_MODE_ALWAYS
-	pause_dialog.title = "游戏暂停"
+	pause_dialog.title = ConfigManager.get_language_text("pause_menu.title", "游戏暂停")
 	pause_dialog.min_size = Vector2(300, 200)
 	# 确保对话框居中
 	pause_dialog.unresizable = true
@@ -49,7 +53,7 @@ func create_pause_dialog():
 	var continue_button = Button.new()
 	# 设置 process_mode 为 ALWAYS
 	continue_button.process_mode = Node.PROCESS_MODE_ALWAYS
-	continue_button.text = "继续游戏"
+	continue_button.text = ConfigManager.get_language_text("pause_menu.continue", "继续游戏")
 	continue_button.pressed.connect(func():
 		# 恢复游戏
 		GameManager.resume_game()
@@ -61,10 +65,11 @@ func create_pause_dialog():
 	var restart_button = Button.new()
 	# 设置 process_mode 为 ALWAYS
 	restart_button.process_mode = Node.PROCESS_MODE_ALWAYS
-	restart_button.text = "重新开始"
+	restart_button.text = ConfigManager.get_language_text("pause_menu.restart", "重新开始")
 	restart_button.pressed.connect(func():
 		# 先恢复游戏，再切换场景
 		GameManager.resume_game()
+		GameManager.reset_game()
 		pause_dialog.hide()
 		# 跳转到角色选择界面
 		get_tree().change_scene_to_file("res://scenes/ui/character_select.tscn")
@@ -75,10 +80,11 @@ func create_pause_dialog():
 	var exit_button = Button.new()
 	# 设置 process_mode 为 ALWAYS
 	exit_button.process_mode = Node.PROCESS_MODE_ALWAYS
-	exit_button.text = "退出"
+	exit_button.text = ConfigManager.get_language_text("pause_menu.exit", "退出")
 	exit_button.pressed.connect(func():
 		# 先恢复游戏，再切换场景
 		GameManager.resume_game()
+		GameManager.reset_game()
 		pause_dialog.hide()
 		# 返回主菜单
 		get_tree().change_scene_to_file("res://scenes/ui/main_menu.tscn")
@@ -95,6 +101,75 @@ func create_pause_dialog():
 	# 添加到根节点
 	get_tree().root.add_child(pause_dialog)
 	pause_dialog.hide()
+
+func create_death_dialog():
+	# 创建死亡菜单对话框
+	death_dialog = AcceptDialog.new()
+	# 设置 process_mode 为 ALWAYS，确保在场景树暂停时仍能响应
+	death_dialog.process_mode = Node.PROCESS_MODE_ALWAYS
+	death_dialog.title = ConfigManager.get_language_text("death_menu.title", "你已经死亡")
+	death_dialog.min_size = Vector2(300, 150)
+	# 确保对话框居中
+	death_dialog.unresizable = true
+	
+	# 清除默认的OK按钮
+	for child in death_dialog.get_children():
+		if child is Button and child.text == "OK":
+			child.queue_free()
+	
+	# 创建垂直容器
+	var vbox = VBoxContainer.new()
+	# 设置 process_mode 为 ALWAYS
+	vbox.process_mode = Node.PROCESS_MODE_ALWAYS
+	vbox.add_theme_constant_override("margin_left", 20)
+	vbox.add_theme_constant_override("margin_top", 20)
+	vbox.add_theme_constant_override("margin_right", 20)
+	vbox.add_theme_constant_override("margin_bottom", 20)
+	death_dialog.add_child(vbox)
+	
+	# 重新开始按钮
+	var restart_button = Button.new()
+	# 设置 process_mode 为 ALWAYS
+	restart_button.process_mode = Node.PROCESS_MODE_ALWAYS
+	restart_button.text = ConfigManager.get_language_text("death_menu.restart", "重新开始")
+	restart_button.pressed.connect(func():
+		# 先恢复游戏，再切换场景
+		GameManager.resume_game()
+		GameManager.reset_game()
+		death_dialog.hide()
+		# 跳转到角色选择界面
+		get_tree().change_scene_to_file("res://scenes/ui/character_select.tscn")
+	)
+	vbox.add_child(restart_button)
+	
+	# 退出按钮
+	var exit_button = Button.new()
+	# 设置 process_mode 为 ALWAYS
+	exit_button.process_mode = Node.PROCESS_MODE_ALWAYS
+	exit_button.text = ConfigManager.get_language_text("death_menu.exit", "退出")
+	exit_button.pressed.connect(func():
+		# 先恢复游戏，再切换场景
+		GameManager.resume_game()
+		GameManager.reset_game()
+		death_dialog.hide()
+		# 返回主菜单
+		get_tree().change_scene_to_file("res://scenes/ui/main_menu.tscn")
+	)
+	vbox.add_child(exit_button)
+	
+	# 添加ESC键关闭功能
+	death_dialog.connect("close_requested", func():
+		print("ESC键被按下，返回主菜单")
+		GameManager.resume_game()
+		GameManager.reset_game()
+		death_dialog.hide()
+		# 返回主菜单
+		get_tree().change_scene_to_file("res://scenes/ui/main_menu.tscn")
+	)
+	
+	# 添加到根节点
+	get_tree().root.add_child(death_dialog)
+	death_dialog.hide()
 
 func _process(_delta):
 	if player and is_instance_valid(player):
@@ -123,6 +198,9 @@ func _process(_delta):
 			camera.global_position = Vector2(target_camera_x, target_camera_y)
 
 func start_game():
+	# 清空地图
+	clear_map()
+	
 	GameManager.start_game()
 	
 	# 计算地图中心位置（2000x2000的正方形）
@@ -143,6 +221,38 @@ func start_game():
 		camera.make_current()
 	
 	game_ui.visible = true
+
+func clear_map():
+	# 删除旧的玩家
+	if player and is_instance_valid(player):
+		player.queue_free()
+		player = null
+	
+	# 删除所有敌人
+	for enemy in GameManager.get_enemies():
+		if enemy and is_instance_valid(enemy):
+			enemy.queue_free()
+	
+	# 重置敌人生成器
+	if enemy_spawner and is_instance_valid(enemy_spawner):
+		enemy_spawner.reset()
+	
+	# 删除所有经验宝石
+	for child in get_tree().root.get_children():
+		if child.name == "ExperienceGem" or child.has_method("experience_value"):
+			if is_instance_valid(child):
+				child.queue_free()
+	
+	# 删除地图边框
+	var map_border = get_node_or_null("MapBorder")
+	if map_border and is_instance_valid(map_border):
+		map_border.queue_free()
+	
+	# 删除其他可能的子节点（除了UI和EnemySpawner）
+	for child in get_children():
+		if child.name != "GameUI" and child.name != "UpgradeUI" and child.name != "EnemySpawner" and child.name != "Camera2D" and child.name != "PlayerSpawn" and child.name != "MapBorder":
+			if is_instance_valid(child):
+				child.queue_free()
 
 func create_map_border():
 	var map_size = ConfigManager.get_map_size()
@@ -165,30 +275,15 @@ func create_map_border():
 	add_child(border_line)
 
 func _on_level_up(_new_level: int):
-	upgrade_ui.show_upgrades()
+	if upgrade_ui and is_instance_valid(upgrade_ui):
+		upgrade_ui.show_upgrades()
 
 func _on_game_over():
 	game_ui.visible = false
-	
-	var game_over_label = Label.new()
-	game_over_label.text = "游戏结束！\n按 R 重新开始"
-	game_over_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	game_over_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-	game_over_label.add_theme_font_size_override("font_size", 48)
-	game_over_label.anchors_preset = Control.PRESET_CENTER
-	game_over_label.offset_left = -200
-	game_over_label.offset_top = -50
-	game_over_label.offset_right = 200
-	game_over_label.offset_bottom = 50
-	
-	var canvas = CanvasLayer.new()
-	canvas.add_child(game_over_label)
-	add_child(canvas)
+	# 显示死亡菜单（不要暂停游戏，避免场景树被暂停）
+	show_death_menu()
 
 func _input(event: InputEvent):
-	if event.is_action_pressed("ui_accept") and not GameManager.is_game_running:
-		get_tree().reload_current_scene()
-	
 	if event.is_action_pressed("pause_menu") and GameManager.is_game_running and not GameManager.is_paused:  # 'r' key
 		show_pause_menu()
 	
@@ -196,7 +291,10 @@ func _input(event: InputEvent):
 	if event.is_action_pressed("ui_cancel") and GameManager.is_paused:
 		print("ESC键被按下，恢复游戏")
 		GameManager.resume_game()
-		pause_dialog.hide()
+		if pause_dialog and is_instance_valid(pause_dialog):
+			pause_dialog.hide()
+		if death_dialog and is_instance_valid(death_dialog):
+			death_dialog.hide()
 
 func show_pause_menu():
 	# 暂停游戏
@@ -207,3 +305,11 @@ func show_pause_menu():
 	pause_dialog.position = (viewport_size - dialog_size) / 2
 	# 显示预创建的暂停菜单
 	pause_dialog.show()
+
+func show_death_menu():
+	# 确保对话框居中
+	var viewport_size = Vector2(get_viewport_rect().size)
+	var dialog_size = Vector2(death_dialog.min_size)
+	death_dialog.position = (viewport_size - dialog_size) / 2
+	# 显示预创建的死亡菜单
+	death_dialog.show()

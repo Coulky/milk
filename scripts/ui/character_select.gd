@@ -3,7 +3,17 @@ extends Control
 var game_scene = preload("res://scenes/main.tscn")
 
 func _ready():
-	pass
+	# 设置按钮文本
+	if has_node("VBoxContainer/Title"):
+		$VBoxContainer/Title.text = ConfigManager.get_language_text("character_select.title", "选择角色")
+	if has_node("VBoxContainer/HBoxContainer/WarriorButton"):
+		$VBoxContainer/HBoxContainer/WarriorButton.text = ConfigManager.get_language_text("character_select.warrior", "战士")
+	if has_node("VBoxContainer/HBoxContainer/HunterButton"):
+		$VBoxContainer/HBoxContainer/HunterButton.text = ConfigManager.get_language_text("character_select.hunter", "猎人")
+	if has_node("VBoxContainer/HBoxContainer/MageButton"):
+		$VBoxContainer/HBoxContainer/MageButton.text = ConfigManager.get_language_text("character_select.mage", "法师")
+	if has_node("VBoxContainer/BackButton"):
+		$VBoxContainer/BackButton.text = ConfigManager.get_language_text("character_select.back", "返回")
 
 func _on_warrior_button_pressed():
 	# 选择战士角色
