@@ -18,3 +18,4 @@ res://scripts/managers/config_manager.gd
 res://scripts/ui/upgrade_ui.gd
 res://scenes/ui/game_ui.tscn
 res://scenes/main.tscn
+res://scenes/ui/upgrade_ui.tscn

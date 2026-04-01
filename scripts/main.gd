@@ -20,8 +20,6 @@ func _ready():
 	create_pause_dialog()
 	# 预创建死亡菜单
 	create_death_dialog()
-	# 设置 process_mode 为 ALWAYS，确保在场景树暂停时仍能响应输入
-	process_mode = Node.PROCESS_MODE_ALWAYS
 	start_game()
 
 func create_pause_dialog():
@@ -286,7 +284,7 @@ func _on_level_up(_new_level: int):
 func _on_game_over():
 	if game_ui and is_instance_valid(game_ui):
 		game_ui.visible = false
-	# 显示死亡菜单（不要暂停游戏，避免场景树被暂停）
+	# 显示死亡菜单
 	show_death_menu()
 
 func _input(event: InputEvent):
@@ -312,6 +310,8 @@ func show_pause_menu():
 	pause_dialog.show()
 
 func show_death_menu():
+	# 暂停游戏
+	GameManager.pause_game()
 	# 确保对话框居中
 	var viewport_size = Vector2(get_viewport_rect().size)
 	var dialog_size = Vector2(death_dialog.min_size)
