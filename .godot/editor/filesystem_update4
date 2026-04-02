@@ -1,9 +1,0 @@
-res://scripts/core/asset_manager.gd
-res://scripts/entities/enemies/enemy.gd
-res://scripts/entities/pickups/experience_gem.gd
-res://scripts/entities/pickups/consumable_pickup.gd
-res://scenes/entities/player_projectile.tscn
-res://scripts/entities/weapons/player_projectile.gd
-res://scripts/entities/player/player.gd
-res://scripts/entities/weapons/weapon_base.gd
-res://scripts/managers/config_manager.gd
