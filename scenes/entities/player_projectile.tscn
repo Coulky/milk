@@ -13,6 +13,4 @@ script = ExtResource("1_projectile")
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 shape = SubResource("CircleShape2D_projectile")
 
-[node name="Label" type="Label" parent="."]
-
 [connection signal="body_entered" from="." to="." method="_on_body_entered"]

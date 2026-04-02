@@ -12,7 +12,10 @@
 	  "speed": 200,
 	  "attack": 10,
 	  "defense": 5,
-	  "starting_weapons": ["sword"],
+	  "attack_type": "melee",
+	  "attack_range": 80,
+	  "attack_speed": 1.0,
+	  "piercing": 3,
 	  "unlock_condition": null
 	},
 	{
@@ -27,7 +30,12 @@
 	  "speed": 220,
 	  "attack": 15,
 	  "defense": 3,
-	  "starting_weapons": ["bow"],
+	  "attack_type": "projectile",
+	  "attack_range": 400,
+	  "attack_speed": 1.2,
+	  "projectile_speed": 600,
+	  "piercing": 1,
+	  "projectile_texture": "res://assets/images/projectiles/player_arrow.png",
 	  "unlock_condition": null
 	},
 	{
@@ -42,7 +50,13 @@
 	  "speed": 180,
 	  "attack": 20,
 	  "defense": 2,
-	  "starting_weapons": ["wand"],
+	  "attack_type": "projectile",
+	  "attack_range": 300,
+	  "attack_speed": 1.5,
+	  "projectile_speed": 400,
+	  "piercing": 1,
+	  "homing": true,
+	  "projectile_texture": "res://assets/images/projectiles/fireball.png",
 	  "unlock_condition": {
 		"type": "kill_enemies",
 		"value": 1000

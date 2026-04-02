@@ -11,7 +11,16 @@ var base_attack: float = 10.0
 var defense: float = 5.0
 var pickup_range: float = 50.0
 
-var weapons: Array = []
+# 攻击属性
+var attack_type: String = "melee"
+var attack_range: float = 80.0
+var attack_speed: float = 1.0
+var attack_timer: float = 0.0
+var projectile_speed: float = 400.0
+var piercing: int = 1
+var homing: bool = false
+var projectile_texture: String = ""
+
 var passive_items: Dictionary = {}
 var item_counts: Dictionary = {}
 
@@ -28,14 +37,12 @@ signal player_died
 @onready var hitbox: Area2D = $Hitbox
 @onready var pickup_area: Area2D = $PickupArea
 @onready var invincibility_timer: Timer = $InvincibilityTimer
-@onready var weapons_container: Node2D = $Weapons
 
 func _ready():
 	# 从 GameManager 获取选中的角色
 	character_id = GameManager.selected_character
 	load_character_config()
 	setup_character()
-	add_starting_weapons()
 	GameManager.register_player(self)
 	# 初始化时更新血条
 	GameManager.update_player_health(current_health, max_health)
@@ -52,6 +59,15 @@ func setup_character():
 	speed = character_config.get("speed", 200)
 	base_attack = character_config.get("attack", 10)
 	defense = character_config.get("defense", 5)
+	
+	# 加载攻击属性
+	attack_type = character_config.get("attack_type", "melee")
+	attack_range = character_config.get("attack_range", 80.0)
+	attack_speed = character_config.get("attack_speed", 1.0)
+	projectile_speed = character_config.get("projectile_speed", 400.0)
+	piercing = character_config.get("piercing", 1)
+	homing = character_config.get("homing", false)
+	projectile_texture = character_config.get("projectile_texture", "")
 	
 	var model_path = character_config.get("path", "")
 	var size = character_config.get("size", [0, 0])
@@ -113,24 +129,10 @@ func setup_character():
 		if has_node("Sprite2D"):
 			$Sprite2D.hide()
 
-func add_starting_weapons():
-	var starting_weapons = character_config.get("starting_weapons", [])
-	for weapon_id in starting_weapons:
-		add_weapon(weapon_id)
 
-func add_weapon(weapon_id: String):
-	var weapon_config = ConfigManager.get_weapon(weapon_id)
-	if weapon_config.is_empty():
-		push_error("无法加载武器配置: " + weapon_id)
-		return
-	
-	var weapon = WeaponBase.new()
-	weapon.setup(weapon_config, self)
-	weapons.append(weapon)
-	weapons_container.add_child(weapon)
 
 func add_passive_item(item_id: String):
-	var item_config = ConfigManager.get_passive_item(item_id)
+	var item_config = ConfigManager.get_item(item_id)
 	if item_config.is_empty():
 		return
 	
@@ -157,11 +159,11 @@ func apply_passive_item_effects(item_config: Dictionary, level: int):
 				pickup_range += value
 				update_pickup_area()
 			"cooldown_reduction":
-				for weapon in weapons:
-					weapon.apply_cooldown_reduction(value)
+				# 减少攻击间隔
+				attack_speed *= (1.0 - value)
 			"area_bonus":
-				for weapon in weapons:
-					weapon.apply_area_bonus(value)
+				# 增加攻击范围
+				attack_range *= (1.0 + value)
 
 func update_pickup_area():
 	if pickup_area:
@@ -169,7 +171,7 @@ func update_pickup_area():
 		if collision_shape and collision_shape.shape is CircleShape2D:
 			collision_shape.shape.radius = pickup_range
 
-func _physics_process(_delta):
+func _physics_process(delta):
 	if not GameManager.is_game_running or GameManager.is_paused:
 		return
 	
@@ -189,6 +191,12 @@ func _physics_process(_delta):
 		if sprite_2d_ref:
 			sprite_2d_ref.scale.x = abs(sprite_2d_ref.scale.x)
 	
+	# 处理攻击
+	attack_timer += delta
+	if attack_timer >= attack_speed:
+		attack_timer = 0.0
+		perform_attack()
+	
 	# 限制玩家在地图边界内
 	var map_size = ConfigManager.get_map_size()
 	var map_width = map_size.get("width", 2000)
@@ -203,6 +211,43 @@ func get_input_direction() -> Vector2:
 	direction.x = Input.get_axis("move_left", "move_right")
 	direction.y = Input.get_axis("move_up", "move_down")
 	return direction.normalized()
+
+func perform_attack():
+	match attack_type:
+		"melee":
+			melee_attack()
+		"projectile":
+			projectile_attack()
+
+func melee_attack():
+	var enemies = GameManager.get_enemies_in_range(global_position, attack_range)
+	var hit_count = 0
+	for enemy in enemies:
+		if hit_count >= piercing:
+			break
+		enemy.take_damage(int(base_attack))
+		hit_count += 1
+
+func projectile_attack():
+	var target = GameManager.get_nearest_enemy(global_position, attack_range)
+	if target == null:
+		return
+	
+	var projectile = create_projectile()
+	projectile.global_position = global_position
+	projectile.setup(
+		int(base_attack),
+		projectile_speed,
+		target.global_position if not homing else target,
+		piercing,
+		homing,
+		projectile_texture
+	)
+	get_tree().current_scene.add_child(projectile)
+
+func create_projectile() -> Node2D:
+	var projectile_scene = preload("res://scenes/entities/player_projectile.tscn")
+	return projectile_scene.instantiate()
 
 func take_damage(amount: int):
 	if is_invincible:

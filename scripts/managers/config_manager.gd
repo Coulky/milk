@@ -2,7 +2,6 @@ extends Node
 
 var characters_config = {}
 var enemies_config = {}
-var weapons_config = {}
 var items_config = {}
 var drops_config = {}
 var game_settings = {}
@@ -14,7 +13,6 @@ func _ready():
 func load_all_configs():
 	characters_config = load_json("res://configs/characters.json")
 	enemies_config = load_json("res://configs/enemies.json")
-	weapons_config = load_json("res://configs/weapons.json")
 	items_config = load_json("res://configs/items.json")
 	drops_config = load_json("res://configs/drops.json")
 	game_settings = load_json("res://configs/game_settings.json")
@@ -52,23 +50,7 @@ func get_enemy(id):
 func get_all_enemies():
 	return enemies_config.get("enemies", [])
 
-func get_weapon(id):
-	for weapon in weapons_config.get("weapons", []):
-		if weapon.get("id") == id:
-			return weapon
-	return {}
 
-func get_all_weapons():
-	return weapons_config.get("weapons", [])
-
-func get_passive_item(id):
-	for item in weapons_config.get("passive_items", []):
-		if item.get("id") == id:
-			return item
-	return {}
-
-func get_all_passive_items():
-	return weapons_config.get("passive_items", [])
 
 func get_game_setting(key, default = null):
 	return game_settings.get("game_settings", {}).get(key, default)

@@ -117,7 +117,8 @@ func projectile_attack():
 			projectile_speed,
 			target.global_position if not homing else target,
 			piercing,
-			homing
+			homing,
+			""
 		)
 		get_tree().current_scene.add_child(projectile)
 
