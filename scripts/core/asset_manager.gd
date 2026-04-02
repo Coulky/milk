@@ -48,17 +48,18 @@ func create_texture_rect(asset_data: Dictionary) -> Control:
 	var path = asset_data.get("path", "")
 	var texture = load_asset_texture(path)
 	if texture:
-		# 创建 Sprite2D 节点来显示图片
-		var sprite = Sprite2D.new()
-		sprite.texture = texture
+		# 创建 TextureRect 节点来显示图片
+		var texture_rect = TextureRect.new()
+		texture_rect.texture = texture
 		
-		# 根据配置的 size 调整缩放
-		var texture_size = texture.get_size()
-		var scale_x = size.x / texture_size.x
-		var scale_y = size.y / texture_size.y
-		sprite.scale = Vector2(scale_x, scale_y)
+		# 设置大小
+		texture_rect.custom_minimum_size = size
 		
-		# 将 Sprite2D 添加到容器中
-		container.add_child(sprite)
+		# 设置拉伸模式和透明度
+		texture_rect.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+		texture_rect.expand_mode = TextureRect.EXPAND_FIT_WIDTH_PROPORTIONAL
+		
+		# 将 TextureRect 添加到容器中
+		container.add_child(texture_rect)
 	
 	return container

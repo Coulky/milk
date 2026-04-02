@@ -10,7 +10,7 @@ func _ready():
 		body_entered.connect(_on_body_entered)
 	# 添加自动消失计时器
 	var timer = Timer.new()
-	timer.wait_time = 20.0
+	timer.wait_time = 40.0
 	timer.one_shot = true
 	timer.autostart = true
 	timer.timeout.connect(queue_free)

@@ -188,7 +188,9 @@ func die():
 func spawn_experience_gem():
 	var saved_position = global_position
 	var saved_experience = experience_value
-	call_deferred("_spawn_experience_gem_deferred", saved_position, saved_experience)
+	# 给经验宝石一个随机的偏移量，避免与其他掉落物品重叠
+	var offset = Vector2(randf_range(-30, 30), randf_range(-30, 30))
+	call_deferred("_spawn_experience_gem_deferred", saved_position + offset, saved_experience)
 
 func _spawn_experience_gem_deferred(pos: Vector2, exp_value: int):
 	var gem_scene = preload("res://scenes/entities/experience_gem.tscn")
@@ -205,8 +207,10 @@ func spawn_pickup():
 	for drop in consumable_drops:
 		var probability = drop.get("drop_probability", 0)
 		if randf() < probability:
+			# 给消耗品一个随机的偏移量，避免与经验宝石重叠
+			var offset = Vector2(randf_range(-30, 30), randf_range(-30, 30))
 			# 使用 call_deferred 延迟创建物品，避免物理查询冲突
-			call_deferred("_spawn_pickup_deferred", drop, global_position)
+			call_deferred("_spawn_pickup_deferred", drop, global_position + offset)
 			break  # 只掉落一个物品
 
 func _spawn_pickup_deferred(drop, pos):
@@ -223,25 +227,28 @@ func _spawn_pickup_deferred(drop, pos):
 	
 	# 创建标签或纹理用于显示
 	if drop.path.begins_with("res://"):
-		# 创建 Sprite2D 节点来显示图片
-		var drop_sprite = Sprite2D.new()
+		# 创建 TextureRect 节点来显示图片
+		var texture_rect = TextureRect.new()
 		
 		# 加载纹理
 		var texture = load(drop.path)
 		if texture:
-			drop_sprite.texture = texture
+			texture_rect.texture = texture
 			
-			# 根据配置的 size 调整缩放
+			# 根据配置的 size 调整大小
 			if drop.has("size"):
 				var size = drop.get("size")
 				if size is Array and size.size() == 2:
-					# 计算缩放比例
-					var texture_size = texture.get_size()
-					var scale_x = size[0] / texture_size.x
-					var scale_y = size[1] / texture_size.y
-					drop_sprite.scale = Vector2(scale_x, scale_y)
+					texture_rect.custom_minimum_size = Vector2(size[0], size[1])
+			
+			# 设置拉伸模式和透明度
+			texture_rect.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+			texture_rect.expand_mode = TextureRect.EXPAND_FIT_WIDTH_PROPORTIONAL
+			
+			# 居中显示
+			texture_rect.position = Vector2(-texture_rect.custom_minimum_size.x / 2, -texture_rect.custom_minimum_size.y / 2)
 		
-		pickup.add_child(drop_sprite)
+		pickup.add_child(texture_rect)
 	else:
 		# 如果是符号，显示为文本
 		var label = Label.new()

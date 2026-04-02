@@ -1,10 +1,4 @@
-res://scripts/ui/upgrade_ui.gd
-res://scenes/entities/player.tscn
-res://scripts/entities/enemies/enemy_projectile.gd
-res://scripts/ui/game_ui.gd
-res://scripts/entities/enemies/enemy.gd
-res://scripts/entities/player/player.gd
-res://scripts/entities/pickups/consumable_pickup.gd
-res://scripts/managers/config_manager.gd
-res://scripts/entities/pickups/experience_gem.gd
 res://scripts/core/asset_manager.gd
+res://scripts/entities/enemies/enemy.gd
+res://scripts/entities/pickups/experience_gem.gd
+res://scripts/entities/pickups/consumable_pickup.gd
