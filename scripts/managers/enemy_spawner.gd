@@ -64,7 +64,7 @@ func get_random_enemy_type() -> String:
 	
 	var enemy_types = current_wave.get("enemy_types", ["zombie"])
 	
-	var enemies_config = ConfigManager.get_all_enemies()
+	var enemies_config = ConfigManager.get_all_monsters()
 	var weighted_enemies = []
 	
 	for enemy_type in enemy_types:

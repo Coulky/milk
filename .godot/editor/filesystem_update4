@@ -1,0 +1,3 @@
+res://scripts/entities/enemies/enemy.gd
+res://scripts/managers/config_manager.gd
+res://scripts/managers/enemy_spawner.gd

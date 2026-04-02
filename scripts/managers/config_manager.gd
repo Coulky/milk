@@ -1,7 +1,7 @@
 extends Node
 
 var characters_config = {}
-var enemies_config = {}
+var monsters_config = {}
 var items_config = {}
 var drops_config = {}
 var game_settings = {}
@@ -12,7 +12,7 @@ func _ready():
 
 func load_all_configs():
 	characters_config = load_json("res://configs/characters.json")
-	enemies_config = load_json("res://configs/enemies.json")
+	monsters_config = load_json("res://configs/monsters.json")
 	items_config = load_json("res://configs/items.json")
 	drops_config = load_json("res://configs/drops.json")
 	game_settings = load_json("res://configs/game_settings.json")
@@ -41,14 +41,14 @@ func get_character(id):
 func get_all_characters():
 	return characters_config.get("characters", [])
 
-func get_enemy(id):
-	for enemy in enemies_config.get("enemies", []):
-		if enemy.get("id") == id:
-			return enemy
+func get_monster(id):
+	for monster in monsters_config.get("monsters", []):
+		if monster.get("id") == id:
+			return monster
 	return {}
 
-func get_all_enemies():
-	return enemies_config.get("enemies", [])
+func get_all_monsters():
+	return monsters_config.get("monsters", [])
 
 
 

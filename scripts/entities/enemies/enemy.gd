@@ -23,6 +23,7 @@ var target: Node2D = null
 signal died(enemy)
 
 @onready var sprite: Label = $Sprite
+@onready var sprite_2d: Sprite2D = null
 @onready var collision: CollisionShape2D = $CollisionShape2D
 @onready var hitbox: Area2D = $Hitbox
 
@@ -33,9 +34,9 @@ func _ready():
 	GameManager.register_enemy(self)
 
 func load_enemy_config():
-	enemy_config = ConfigManager.get_enemy(enemy_id)
+	enemy_config = ConfigManager.get_monster(enemy_id)
 	if enemy_config.is_empty():
-		push_error("无法加载敌人配置: " + enemy_id)
+		push_error("无法加载怪物配置: " + enemy_id)
 		return
 
 func setup_enemy():
@@ -62,12 +63,59 @@ func setup_enemy():
 	var symbol = enemy_config.get("symbol", "Z")
 	var color = Color(enemy_config.get("symbol_color", "#00ff00"))
 	
-	if sprite:
-		sprite.text = symbol
-		sprite.add_theme_color_override("font_color", color)
-		sprite.add_theme_font_size_override("font_size", 28)
-		sprite.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-		sprite.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	# 加载怪物素材
+	var model_path = enemy_config.get("path", "")
+	var size = enemy_config.get("size", [0, 0])
+	var model_width = size[0]
+	var model_height = size[1]
+	
+	if model_path and model_path != "":
+		# 如果有模型路径，创建 Sprite2D 节点
+		if has_node("Sprite2D"):
+			sprite_2d = $Sprite2D
+		else:
+			sprite_2d = Sprite2D.new()
+			sprite_2d.name = "Sprite2D"
+			add_child(sprite_2d)
+		
+		# 加载图片
+		var texture = load(model_path)
+		if texture:
+			sprite_2d.texture = texture
+			# 应用尺寸设置
+			if model_width > 0 and model_height > 0:
+				# 计算缩放比例
+				var original_size = texture.get_size()
+				var scale_x = model_width / original_size.x
+				var scale_y = model_height / original_size.y
+				sprite_2d.scale = Vector2(scale_x, scale_y)
+			# 隐藏原有的 Label 节点
+			if sprite:
+				sprite.hide()
+		else:
+			# 如果图片加载失败，显示符号
+			if sprite:
+				sprite.text = symbol
+				sprite.add_theme_color_override("font_color", color)
+				sprite.add_theme_font_size_override("font_size", 28)
+				sprite.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+				sprite.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+				sprite.show()
+			# 隐藏 Sprite2D 节点
+			if sprite_2d:
+				sprite_2d.hide()
+	else:
+		# 如果没有模型路径，显示符号
+		if sprite:
+			sprite.text = symbol
+			sprite.add_theme_color_override("font_color", color)
+			sprite.add_theme_font_size_override("font_size", 28)
+			sprite.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+			sprite.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+			sprite.show()
+		# 隐藏 Sprite2D 节点
+		if sprite_2d:
+			sprite_2d.hide()
 
 func _physics_process(_delta):
 	if not GameManager.is_game_running or GameManager.is_paused:
@@ -107,6 +155,15 @@ func move_towards_target():
 	var direction = (target.global_position - global_position).normalized()
 	velocity = direction * speed
 	move_and_slide()
+	
+	# 翻转朝向，确保怪物面向目标
+	if sprite_2d:
+		if direction.x > 0:
+			# 目标在右侧，怪物朝右
+			sprite_2d.scale = Vector2(-abs(sprite_2d.scale.x), sprite_2d.scale.y)
+		elif direction.x < 0:
+			# 目标在左侧，怪物朝左
+			sprite_2d.scale = Vector2(abs(sprite_2d.scale.x), sprite_2d.scale.y)
 
 func perform_attack():
 	if target == null:
@@ -126,6 +183,15 @@ func shoot_projectile():
 		return
 	
 	var direction = (target.global_position - global_position).normalized()
+	
+	# 翻转朝向，确保怪物面向目标
+	if sprite_2d:
+		if direction.x < 0:
+			# 目标在右侧，怪物朝左
+			sprite_2d.scale = Vector2(abs(sprite_2d.scale.x), sprite_2d.scale.y)
+		elif direction.x > 0:
+			# 目标在左侧，怪物朝右
+			sprite_2d.scale = Vector2(-abs(sprite_2d.scale.x), sprite_2d.scale.y)
 	
 	# 直接在代码中创建投射物，不使用预加载场景
 	var projectile = Area2D.new()
