@@ -12,6 +12,7 @@
         "value": 30
       },
       "rarity": "common",
+      "level": 1,
       "drop_rate": 0.25,
       "stackable": true,
       "max_stack": 10,
@@ -49,6 +50,7 @@
         "duration": 10
       },
       "rarity": "uncommon",
+      "level": 2,
       "drop_rate": 0.15,
       "stackable": true,
       "max_stack": 5,
@@ -85,6 +87,7 @@
         "mana_value": 20
       },
       "rarity": "common",
+      "level": 1,
       "drop_rate": 0.2,
       "stackable": true,
       "max_stack": 15,
@@ -122,6 +125,7 @@
         "duration": 10
       },
       "rarity": "common",
+      "level": 1,
       "drop_rate": 0.2,
       "stackable": true,
       "max_stack": 10,
@@ -157,6 +161,7 @@
         "value": 40
       },
       "rarity": "uncommon",
+      "level": 2,
       "drop_rate": 0.18,
       "stackable": true,
       "max_stack": 8,
@@ -188,6 +193,7 @@
       "type": "consumable",
       "item_type": "common",
       "rarity": "uncommon",
+      "level": 2,
       "drop_rate": 1.0,
       "stackable": true,
       "max_stack": 6,
@@ -225,6 +231,7 @@
         "duration": 10
       },
       "rarity": "common",
+      "level": 1,
       "drop_rate": 0.22,
       "stackable": true,
       "max_stack": 12,
@@ -262,6 +269,7 @@
         "duration": 10
       },
       "rarity": "uncommon",
+      "level": 2,
       "drop_rate": 0.16,
       "stackable": true,
       "max_stack": 8,
@@ -299,6 +307,7 @@
         "duration": 10
       },
       "rarity": "uncommon",
+      "level": 2,
       "drop_rate": 0.14,
       "stackable": true,
       "max_stack": 6,
@@ -338,6 +347,7 @@
         "duration": 15
       },
       "rarity": "rare",
+      "level": 3,
       "drop_rate": 0.1,
       "stackable": true,
       "max_stack": 4,
@@ -373,6 +383,7 @@
         "value": 50
       },
       "rarity": "rare",
+      "level": 3,
       "drop_rate": 0.08,
       "stackable": true,
       "max_stack": 3,
@@ -408,6 +419,7 @@
         "value": 40
       },
       "rarity": "uncommon",
+      "level": 2,
       "drop_rate": 0.12,
       "stackable": true,
       "max_stack": 6,
@@ -448,6 +460,7 @@
         "duration": 10
       },
       "rarity": "rare",
+      "level": 3,
       "drop_rate": 0.1,
       "stackable": true,
       "max_stack": 3,
@@ -488,6 +501,7 @@
         "duration": 15
       },
       "rarity": "epic",
+      "level": 4,
       "drop_rate": 0.05,
       "stackable": true,
       "max_stack": 2,
@@ -528,6 +542,7 @@
         "duration": 10
       },
       "rarity": "rare",
+      "level": 3,
       "drop_rate": 0.1,
       "stackable": true,
       "max_stack": 3,
@@ -568,6 +583,7 @@
         "duration": 15
       },
       "rarity": "epic",
+      "level": 4,
       "drop_rate": 0.05,
       "stackable": true,
       "max_stack": 2,
@@ -608,6 +624,7 @@
         "duration": 10
       },
       "rarity": "rare",
+      "level": 3,
       "drop_rate": 0.1,
       "stackable": true,
       "max_stack": 3,
@@ -648,6 +665,7 @@
         "duration": 15
       },
       "rarity": "epic",
+      "level": 4,
       "drop_rate": 0.05,
       "stackable": true,
       "max_stack": 2,

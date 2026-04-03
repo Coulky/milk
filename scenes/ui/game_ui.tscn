@@ -78,6 +78,17 @@ text = "💀"
 layout_mode = 2
 text = "击杀: 0"
 
+[node name="HBoxContainer4" type="HBoxContainer" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="DamageNumbersCheckBox" type="CheckBox" parent="MarginContainer/VBoxContainer/HBoxContainer4"]
+layout_mode = 2
+button_pressed = true
+
+[node name="DamageNumbersLabel" type="Label" parent="MarginContainer/VBoxContainer/HBoxContainer4"]
+layout_mode = 2
+text = "显示数值"
+
 [node name="Inventory" type="Control" parent="."]
 layout_mode = 1
 anchors_preset = 8

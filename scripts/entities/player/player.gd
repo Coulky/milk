@@ -4,6 +4,11 @@ extends CharacterBody2D
 var character_id: String = ""
 
 var character_config: Dictionary = {}
+
+# 缓存属性（基础属性 + 物品加成）
+var cached_stats: Dictionary = {}
+
+# 实际属性（从缓存读取）
 var max_health: int = 100
 var current_health: int = 100
 var speed: float = 200.0
@@ -54,11 +59,20 @@ func load_character_config():
 		return
 
 func setup_character():
-	max_health = character_config.get("max_health", 100)
-	current_health = max_health
-	speed = character_config.get("speed", 200)
-	base_attack = character_config.get("attack", 10)
-	defense = character_config.get("defense", 5)
+	# 初始化缓存属性（从配置获取基础属性）
+	cached_stats = {
+		"max_health": character_config.get("max_health", 100),
+		"speed": character_config.get("speed", 200.0),
+		"base_attack": character_config.get("attack", 10.0),
+		"defense": character_config.get("defense", 5.0),
+		"attack_speed": 0.0,
+		"crit_chance": 0.0,
+		"range": character_config.get("attack_range", 80.0),
+		"armor": 0.0
+	}
+	
+	# 应用缓存属性到实际属性
+	apply_cached_stats()
 	
 	# 加载攻击属性
 	attack_type = character_config.get("attack_type", "melee")
@@ -69,6 +83,7 @@ func setup_character():
 	homing = character_config.get("homing", false)
 	projectile_texture = character_config.get("projectile_texture", "")
 	
+	# 加载模型
 	var model_path = character_config.get("path", "")
 	var size = character_config.get("size", [0, 0])
 	var model_width = size[0]
@@ -129,8 +144,85 @@ func setup_character():
 		if has_node("Sprite2D"):
 			$Sprite2D.hide()
 
+# 应用缓存属性到实际属性
+func apply_cached_stats():
+	max_health = cached_stats.get("max_health", 100)
+	speed = cached_stats.get("speed", 200.0)
+	base_attack = cached_stats.get("base_attack", 10.0)
+	defense = cached_stats.get("defense", 5.0)
+	attack_speed = cached_stats.get("attack_speed", 1.0)
+	attack_range = cached_stats.get("range", 80.0)
+	
+	# 更新血条
+	emit_signal("health_changed", current_health, max_health)
+	GameManager.update_player_health(current_health, max_health)
 
+# 显示伤害数值
+func show_damage_number(amount: int, is_damage: bool = true):
+	if not ConfigManager.get_game_setting("show_damage_numbers", true):
+		return
+	
+	var label = Label.new()
+	label.text = str(amount)
+	label.add_theme_color_override("font_color", Color(1, 1, 1) if not is_damage else Color(1, 0, 0))
+	label.add_theme_font_size_override("font_size", 24)
+	
+	# 添加到场景
+	add_child(label)
+	label.global_position = global_position
+	
+	# 创建动画
+	var tween = create_tween()
+	tween.tween_property(label, "global_position:y", global_position.y - 100, 2.0)
+	tween.tween_property(label, "modulate:a", 0, 2.0)
+	tween.tween_callback(label.queue_free)
 
+# 添加物品属性到缓存
+func add_item_stats_to_cache(item_id: String):
+	var item = ConfigManager.get_item(item_id)
+	if item and item.has("stats"):
+		var stats = item.get("stats", {})
+		for stat_name in stats.keys():
+			var value = stats[stat_name]
+			if value != null and value != 0:
+				# 映射属性名称
+				var mapped_stat = map_stat_name(stat_name)
+				# 添加到缓存
+				if cached_stats.has(mapped_stat):
+					cached_stats[mapped_stat] += value
+				else:
+					cached_stats[mapped_stat] = value
+				
+				# 如果是max_health属性，同时增加当前生命值
+				if mapped_stat == "max_health":
+					current_health += value
+		
+		# 应用缓存属性到实际属性
+		apply_cached_stats()
+
+# 映射属性名称
+func map_stat_name(stat_name: String) -> String:
+	match stat_name:
+		"max_health": return "max_health"
+		"health_regen": return "health_regen"
+		"life_steal": return "life_steal"
+		"damage": return "base_attack"
+		"melee_damage": return "base_attack"
+		"ranged_damage": return "base_attack"
+		"elemental_damage": return "base_attack"
+		"attack_speed": return "attack_speed"
+		"crit_chance": return "crit_chance"
+		"range": return "range"
+		"armor": return "defense"
+		"evasion": return "evasion"
+		"speed": return "speed"
+		"experience_gain": return "experience_gain"
+		"pickup_range": return "pickup_range"
+		"bounce_count": return "bounce_count"
+		"bounce_damage": return "bounce_damage"
+		_: return stat_name
+
+# 添加被动物品
 func add_passive_item(item_id: String):
 	var item_config = ConfigManager.get_item(item_id)
 	if item_config.is_empty():
@@ -151,19 +243,30 @@ func apply_passive_item_effects(item_config: Dictionary, level: int):
 		var value = effects[effect_key] * level
 		match effect_key:
 			"defense":
-				defense += value
+				if cached_stats.has("defense"):
+					cached_stats["defense"] += value
+				else:
+					cached_stats["defense"] = value
 			"max_health":
-				max_health += value
+				if cached_stats.has("max_health"):
+					cached_stats["max_health"] += value
+				else:
+					cached_stats["max_health"] = value
+				# 同时增加当前生命值
 				current_health += value
 			"pickup_range":
+				# pickup_range 不是缓存属性的一部分，直接修改
 				pickup_range += value
 				update_pickup_area()
 			"cooldown_reduction":
-				# 减少攻击间隔
+				# 减少攻击间隔，直接修改实际属性
 				attack_speed *= (1.0 - value)
 			"area_bonus":
-				# 增加攻击范围
+				# 增加攻击范围，直接修改实际属性
 				attack_range *= (1.0 + value)
+	
+	# 应用缓存属性到实际属性
+	apply_cached_stats()
 
 func update_pickup_area():
 	if pickup_area:
@@ -257,6 +360,9 @@ func take_damage(amount: int):
 	current_health -= actual_damage
 	emit_signal("health_changed", current_health, max_health)
 	GameManager.update_player_health(current_health, max_health)
+	
+	# 显示伤害数值
+	show_damage_number(actual_damage, true)
 	
 	if current_health <= 0:
 		die()

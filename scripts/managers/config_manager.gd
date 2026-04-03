@@ -55,6 +55,11 @@ func get_all_monsters():
 func get_game_setting(key, default = null):
 	return game_settings.get("game_settings", {}).get(key, default)
 
+func set_game_setting(key, value):
+	if not game_settings.has("game_settings"):
+		game_settings["game_settings"] = {}
+	game_settings["game_settings"][key] = value
+
 func get_wave_data():
 	return game_settings.get("waves", [])
 

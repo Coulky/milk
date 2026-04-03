@@ -117,6 +117,18 @@ func _on_settings_button_pressed():
 			language_option.selected = 0  # 默认简体中文
 	language_hbox.add_child(language_option)
 	
+	# 伤害数值显示设置
+	var damage_hbox = HBoxContainer.new()
+	vbox.add_child(damage_hbox)
+	
+	var damage_label = Label.new()
+	damage_label.text = "是否显示数值:"
+	damage_hbox.add_child(damage_label)
+	
+	var damage_checkbox = CheckButton.new()
+	damage_checkbox.button_pressed = ConfigManager.get_game_setting("show_damage_numbers", true)
+	damage_hbox.add_child(damage_checkbox)
+	
 	# 应用按钮
 	var apply_button = Button.new()
 	apply_button.text = ConfigManager.get_language_text("settings.apply", "应用")
@@ -140,6 +152,9 @@ func _on_settings_button_pressed():
 			2:
 				locale = "ja"
 		TranslationServer.set_locale(locale)
+		
+		# 应用伤害数值显示设置
+		ConfigManager.game_settings["game_settings"]["show_damage_numbers"] = damage_checkbox.button_pressed
 		
 		# 刷新界面文本
 		if has_node("VBoxContainer/StartButton"):

@@ -240,8 +240,31 @@ func shoot_projectile():
 func take_damage(amount: int):
 	current_health -= amount
 	
+	# 显示伤害数值
+	show_damage_number(amount, false)
+	
 	if current_health <= 0:
 		die()
+
+# 显示伤害数值
+func show_damage_number(amount: int, is_damage: bool = true):
+	if not ConfigManager.get_game_setting("show_damage_numbers", true):
+		return
+	
+	var label = Label.new()
+	label.text = str(amount)
+	label.add_theme_color_override("font_color", Color(1, 1, 1) if not is_damage else Color(1, 0, 0))
+	label.add_theme_font_size_override("font_size", 24)
+	
+	# 添加到场景
+	add_child(label)
+	label.global_position = global_position
+	
+	# 创建动画
+	var tween = create_tween()
+	tween.tween_property(label, "global_position:y", global_position.y - 100, 2.0)
+	tween.tween_property(label, "modulate:a", 0, 2.0)
+	tween.tween_callback(label.queue_free)
 
 func die():
 	emit_signal("died", self)

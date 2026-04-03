@@ -6,7 +6,8 @@
     "max_enemies_on_screen": 500,
     "experience_gem_value": 1,
     "level_up_base_exp": 10,
-    "level_up_exp_multiplier": 1.5
+    "level_up_exp_multiplier": 1.5,
+    "show_damage_numbers": true
   },
   "level_up_choices": 3,
   "map_size": {

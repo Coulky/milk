@@ -6,6 +6,7 @@ extends CanvasLayer
 @onready var health_bar: ProgressBar = $MarginContainer/VBoxContainer/HealthBarContainer/HealthBar
 @onready var health_label: Label = $MarginContainer/VBoxContainer/HealthBarContainer/HealthLabel
 @onready var kill_label: Label = $MarginContainer/VBoxContainer/HBoxContainer3/KillLabel
+@onready var damage_numbers_checkbox: CheckBox = $MarginContainer/VBoxContainer/HBoxContainer4/DamageNumbersCheckBox
 @onready var items_container: HBoxContainer = $Inventory/ItemsContainer
 
 # 存储当前显示的物品
@@ -16,6 +17,12 @@ func _ready():
 	GameManager.connect("level_up", _on_level_up)
 	GameManager.connect("health_changed", _on_health_changed)
 	GameManager.connect("game_started", _on_game_started)
+	
+	# 连接伤害数值显示复选框
+	damage_numbers_checkbox.toggled.connect(_on_damage_numbers_toggled)
+	
+	# 初始化复选框状态
+	damage_numbers_checkbox.button_pressed = ConfigManager.get_game_setting("show_damage_numbers", true)
 	
 	update_ui()
 
@@ -128,3 +135,6 @@ func update_inventory(item_counts: Dictionary):
 			
 			items_container.add_child(item_label)
 			displayed_items[item_id] = item_label
+
+func _on_damage_numbers_toggled(button_pressed: bool):
+	ConfigManager.set_game_setting("show_damage_numbers", button_pressed)
