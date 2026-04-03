@@ -54,90 +54,159 @@ func display_upgrades():
 		child.queue_free()
 	
 	for upgrade in available_upgrades:
-		# 创建按钮作为容器
-		var button = Button.new()
-		button.custom_minimum_size = Vector2(150, 200)
-		
-		# 创建垂直布局容器
-		var vbox = VBoxContainer.new()
-		vbox.alignment = BoxContainer.ALIGNMENT_CENTER
-		button.add_child(vbox)
-		
-		# 第一行：图标和名字
-		var name_hbox = HBoxContainer.new()
-		name_hbox.alignment = BoxContainer.ALIGNMENT_CENTER
-		vbox.add_child(name_hbox)
-		
-		# 处理图标
-		var icon_path = upgrade.get("path", "?")
-		if icon_path.begins_with("res://"):
-			# 如果是图片路径，使用 AssetManager 创建 TextureRect
-			var asset_manager = preload("res://scripts/core/asset_manager.gd").new()
-			var icon_container = asset_manager.create_texture_rect(upgrade)
-			# 检查容器中是否有纹理
-			var texture_rect = icon_container.get_child(0)
-			if texture_rect and texture_rect.texture:
-				# 直接将容器添加到 name_hbox
-				name_hbox.add_child(icon_container)
-			else:
-				# 如果加载失败，显示默认符号
-				var icon_label = Label.new()
-				icon_label.text = "?"
-				icon_label.add_theme_font_size_override("font_size", 32)
-				name_hbox.add_child(icon_label)
-				continue
-		else:
-			# 如果是符号，显示为文本
-			var icon_label = Label.new()
-			icon_label.text = icon_path
-			icon_label.add_theme_font_size_override("font_size", 32)
-			name_hbox.add_child(icon_label)
-		
-		var name_label = Label.new()
-		name_label.text = upgrade.get("name", "Unknown")
-		name_label.add_theme_font_size_override("font_size", 18)
-		name_hbox.add_child(name_label)
-		
-		# 第二行：描述
-		var desc_label = Label.new()
-		desc_label.text = upgrade.get("description", "")
-		desc_label.add_theme_font_size_override("font_size", 12)
-		desc_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-		vbox.add_child(desc_label)
-		
-		# 显示物品属性（只显示非零属性）
-		if upgrade.get("type") == "item" and upgrade.has("stats"):
-			var stats = upgrade.get("stats")
-			var stats_vbox = VBoxContainer.new()
-			vbox.add_child(stats_vbox)
+		# 创建物品卡片
+		var card = create_item_card(upgrade)
+		upgrade_container.add_child(card)
+
+# 创建物品卡片 - 使用 item.png 作为背景，嵌入图标、名字和属性
+# 
+# 布局结构说明：
+# - 背景：item.png 纹理
+# - 图标位置：通过 ICON_OFFSET 调整，默认居中偏上
+# - 名字位置：通过 NAME_OFFSET 调整，默认在图标下方
+# - 属性位置：通过 STATS_OFFSET 调整，默认在名字下方
+# - 所有位置都是相对于卡片中心的偏移
+func create_item_card(upgrade: Dictionary) -> Control:
+	# 创建按钮作为容器
+	var button = Button.new()
+	button.custom_minimum_size = Vector2(200, 280)
+	button.mouse_filter = Control.MOUSE_FILTER_STOP  # 确保按钮接收鼠标事件
+	button.focus_mode = Control.FOCUS_NONE  # 禁用焦点模式
+	
+	# 创建背景容器 - 使用 Control 节点作为根容器
+	var root_container = Control.new()
+	root_container.set_anchors_preset(Control.PRESET_FULL_RECT)
+	root_container.mouse_filter = Control.MOUSE_FILTER_IGNORE  # 不拦截鼠标事件
+	button.add_child(root_container)
+	
+	# ========== 背景图片设置 ==========
+	# 加载 item.png 作为背景
+	var bg_texture = load("res://assets/images/items/item.png")
+	var bg_rect = TextureRect.new()
+	bg_rect.set_anchors_preset(Control.PRESET_FULL_RECT)
+	bg_rect.texture = bg_texture
+	bg_rect.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	bg_rect.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	bg_rect.mouse_filter = Control.MOUSE_FILTER_IGNORE  # 不拦截鼠标事件
+	root_container.add_child(bg_rect)
+	
+	# ========== 内容容器 ==========
+	# 使用绝对定位来精确控制图标位置
+	var content_container = Control.new()
+	content_container.set_anchors_preset(Control.PRESET_FULL_RECT)
+	content_container.mouse_filter = Control.MOUSE_FILTER_IGNORE  # 不拦截鼠标事件
+	root_container.add_child(content_container)
+	
+	# ========== 图标位置调整 ==========
+	# ICON_POSITION: 图标在卡片中的绝对位置
+	# 相对于卡片左上角的坐标
+	# 根据item.png中的黑色框框位置调整
+	# 默认：Vector2(55, 45) - 图标放在黑色框框位置
+	const ICON_POSITION = Vector2(55, 45)
+	
+	# 处理图标
+	var icon_path = upgrade.get("path", "?")
+	var icon_texture_rect: TextureRect = null
+	
+	if icon_path.begins_with("res://"):
+		# 如果是图片路径，加载纹理
+		var icon_texture = load(icon_path)
+		if icon_texture:
+			icon_texture_rect = TextureRect.new()
+			icon_texture_rect.texture = icon_texture
+			icon_texture_rect.custom_minimum_size = Vector2(80, 80)  # 增大图标大小以适配黑色框框
+			icon_texture_rect.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+			icon_texture_rect.expand_mode = TextureRect.EXPAND_FIT_WIDTH_PROPORTIONAL
+			icon_texture_rect.mouse_filter = Control.MOUSE_FILTER_IGNORE  # 不拦截鼠标事件
 			
-			for stat_name in stats.keys():
-				var value = stats[stat_name]
-				if value != null and value != 0:
-					var stat_label = Label.new()
-					stat_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-					stat_label.add_theme_font_size_override("font_size", 11)
-					
-					# 获取属性显示文本
-					var attr_name = ConfigManager.get_attribute_name(stat_name)
-					var unit = ConfigManager.get_attribute_unit(stat_name)
-					
-					if value > 0:
-						stat_label.text = "+%d%s %s" % [value, unit, attr_name]
-						stat_label.add_theme_color_override("font_color", Color(0, 1, 0))  # 绿色
-					else:
-						stat_label.text = "%d%s %s" % [value, unit, attr_name]
-						stat_label.add_theme_color_override("font_color", Color(1, 0, 0))  # 红色
-					
-					stats_vbox.add_child(stat_label)
+			# 应用图标绝对位置
+			icon_texture_rect.position = ICON_POSITION
+			content_container.add_child(icon_texture_rect)
+		else:
+			# 如果加载失败，显示默认符号
+			var icon_label = Label.new()
+			icon_label.text = "?"
+			icon_label.add_theme_font_size_override("font_size", 32)
+			icon_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+			icon_label.custom_minimum_size = Vector2(80, 80)
+			icon_label.position = ICON_POSITION
+			icon_label.mouse_filter = Control.MOUSE_FILTER_IGNORE  # 不拦截鼠标事件
+			content_container.add_child(icon_label)
+	else:
+		# 如果是符号，显示为文本
+		var icon_label = Label.new()
+		icon_label.text = icon_path
+		icon_label.add_theme_font_size_override("font_size", 32)
+		icon_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		icon_label.custom_minimum_size = Vector2(80, 80)
+		icon_label.position = ICON_POSITION
+		icon_label.mouse_filter = Control.MOUSE_FILTER_IGNORE  # 不拦截鼠标事件
+		content_container.add_child(icon_label)
+	
+	# ========== 属性位置调整 ==========
+	# STATS_POSITION: 属性列表在卡片中的绝对位置
+	# 相对于卡片左上角的坐标
+	# 默认：Vector2(20, 120) - 属性在名字下方（向下调整10像素）
+	const STATS_POSITION = Vector2(20, 120)
+	
+	# 显示物品属性（只显示非零属性）
+	if upgrade.get("type") == "item" and upgrade.has("stats"):
+		var stats = upgrade.get("stats")
+		var stats_vbox = VBoxContainer.new()
+		stats_vbox.alignment = BoxContainer.ALIGNMENT_CENTER
+		stats_vbox.custom_minimum_size = Vector2(160, 80)
+		stats_vbox.mouse_filter = Control.MOUSE_FILTER_IGNORE  # 不拦截鼠标事件
 		
-		# 设置按钮样式
-		var style = StyleBoxFlat.new()
-		style.bg_color = Color(0.2, 0.2, 0.2, 0.8)
-		button.add_theme_stylebox_override("normal", style)
+		# 应用属性绝对位置
+		stats_vbox.position = STATS_POSITION
+		content_container.add_child(stats_vbox)
 		
-		button.pressed.connect(_on_upgrade_selected.bind(upgrade))
-		upgrade_container.add_child(button)
+		for stat_name in stats.keys():
+			var value = stats[stat_name]
+			if value != null and value != 0:
+				var stat_label = Label.new()
+				stat_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+				stat_label.add_theme_font_size_override("font_size", 11)
+				
+				# 获取属性显示文本
+				var attr_name = ConfigManager.get_attribute_name(stat_name)
+				var unit = ConfigManager.get_attribute_unit(stat_name)
+				
+				if value > 0:
+					stat_label.text = "+%d%s %s" % [value, unit, attr_name]
+					stat_label.add_theme_color_override("font_color", Color(0, 0, 0))  # 暂时改为黑色
+				else:
+					stat_label.text = "%d%s %s" % [value, unit, attr_name]
+					stat_label.add_theme_color_override("font_color", Color(0, 0, 0))  # 暂时改为黑色
+				
+				stat_label.mouse_filter = Control.MOUSE_FILTER_IGNORE  # 不拦截鼠标事件
+				stats_vbox.add_child(stat_label)
+	
+	# ========== 名字位置调整 ==========
+	# NAME_POSITION: 名字在卡片中的绝对位置
+	# 相对于卡片左上角的坐标
+	# 默认：Vector2(20, 235) - 名字在图标下方
+	const NAME_POSITION = Vector2(20, 235)
+	
+	# 名字标签
+	var name_label = Label.new()
+	name_label.text = upgrade.get("name", "Unknown")
+	name_label.add_theme_font_size_override("font_size", 16)
+	name_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	name_label.custom_minimum_size = Vector2(160, 30)
+	name_label.position = NAME_POSITION
+	name_label.add_theme_color_override("font_color", Color(0, 0, 0))  # 暂时改为黑色
+	name_label.mouse_filter = Control.MOUSE_FILTER_IGNORE  # 不拦截鼠标事件
+	content_container.add_child(name_label)
+
+	# 设置按钮样式
+	var style = StyleBoxFlat.new()
+	style.bg_color = Color(0.2, 0.2, 0.2, 0.0)  # 透明背景，因为使用图片
+	button.add_theme_stylebox_override("normal", style)
+	
+	button.pressed.connect(_on_upgrade_selected.bind(upgrade))
+	
+	return button
 
 func _on_upgrade_selected(upgrade: Dictionary):
 	selected_upgrade = upgrade
@@ -249,16 +318,14 @@ func apply_upgrade(upgrade: Dictionary):
 							# 处理闪避
 							pass
 						"speed":
-							# 处理移动速度
-							player.speed = player.speed * (1 + total_value / 100)
+							# 处理速度
+							pass
 						"experience_gain":
 							# 处理经验获取
 							pass
 						"pickup_range":
 							# 处理拾取范围
-							player.pickup_range += total_value
-							if player.has_method("update_pickup_area"):
-								player.update_pickup_area()
+							pass
 						"bounce_count":
 							# 处理弹射次数
 							pass
