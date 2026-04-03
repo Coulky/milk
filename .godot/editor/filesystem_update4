@@ -1,10 +1,2 @@
-res://scripts/ui/upgrade_ui.gd
-res://scripts/entities/player/player.gd
-res://scenes/entities/player_projectile.tscn
-res://scripts/entities/weapons/player_projectile.gd
-res://scripts/entities/enemies/enemy.gd
-res://scripts/managers/game_manager.gd
-res://scripts/ui/main_menu.gd
-res://scenes/ui/game_ui.tscn
-res://scripts/managers/config_manager.gd
 res://scripts/ui/game_ui.gd
+res://scenes/ui/game_ui.tscn

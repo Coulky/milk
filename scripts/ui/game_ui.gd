@@ -7,7 +7,7 @@ extends CanvasLayer
 @onready var health_label: Label = $MarginContainer/VBoxContainer/HealthBarContainer/HealthLabel
 @onready var kill_label: Label = $MarginContainer/VBoxContainer/HBoxContainer3/KillLabel
 @onready var damage_numbers_checkbox: CheckBox = $MarginContainer/VBoxContainer/HBoxContainer4/DamageNumbersCheckBox
-@onready var items_container: HBoxContainer = $Inventory/ItemsContainer
+@onready var items_container: HBoxContainer = $Inventory/PanelContainer/ItemsContainer
 
 # 存储当前显示的物品
 var displayed_items: Dictionary = {}
@@ -78,63 +78,98 @@ func update_inventory(item_counts: Dictionary):
 		child.queue_free()
 	displayed_items.clear()
 	
+	# 加载item_child.png作为背景
+	var item_child_texture = load("res://assets/images/items/item_child.png")
+	
 	# 显示每个物品
 	for item_id in item_counts.keys():
 		var count = item_counts[item_id]
 		var item = ConfigManager.get_item(item_id)
 		
-		# 获取物品图标
-		var icon = item.get("path", "?")
+		# 创建物品容器
+		var item_container = Control.new()
+		item_container.custom_minimum_size = Vector2(60, 60)  # 设置固定大小
+		item_container.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
+		item_container.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 		
-		if icon.begins_with("res://"):
-			# 如果是图片路径，创建一个水平容器来放置图片和计数
-			var item_container = HBoxContainer.new()
-			item_container.alignment = BoxContainer.ALIGNMENT_CENTER
-			
-			# 使用 AssetManager 创建 TextureRect
-			var asset_manager = preload("res://scripts/core/asset_manager.gd").new()
-			var icon_container = asset_manager.create_texture_rect(item)
-			# 检查容器中是否有纹理
-			var texture_rect = icon_container.get_child(0)
-			if texture_rect and texture_rect.texture:
-				# 直接添加容器到物品容器
-				item_container.add_child(icon_container)
+		# 添加item_child背景
+		if item_child_texture:
+			var bg_rect = TextureRect.new()
+			bg_rect.set_anchors_preset(Control.PRESET_FULL_RECT)
+			bg_rect.texture = item_child_texture
+			bg_rect.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+			bg_rect.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+			bg_rect.mouse_filter = Control.MOUSE_FILTER_IGNORE
+			item_container.add_child(bg_rect)
+		
+		# 处理图标
+		var icon_path = item.get("path", "?")
+		
+		if icon_path.begins_with("res://"):
+			# 如果是图片路径，加载纹理
+			var icon_texture = load(icon_path)
+			if icon_texture:
+				var icon_rect = TextureRect.new()
+				icon_rect.texture = icon_texture
+				
+				# 计算图标尺寸，保持比例
+				var original_size = icon_texture.get_size()
+				var max_side = max(original_size.x, original_size.y)
+				var icon_scale = 40.0 / max_side  # 图标最大尺寸40
+				var scaled_size = original_size * icon_scale
+				
+				icon_rect.custom_minimum_size = scaled_size
+				icon_rect.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+				icon_rect.expand_mode = TextureRect.EXPAND_FIT_WIDTH_PROPORTIONAL
+				icon_rect.mouse_filter = Control.MOUSE_FILTER_IGNORE
+				
+				# 居中放置图标并调整位置
+				icon_rect.set_anchors_preset(Control.PRESET_CENTER)
+				icon_rect.offset_left = -20  # 向左移动20像素
+				icon_rect.offset_top = -20  # 向上移动20像素
+				item_container.add_child(icon_rect)
 			else:
 				# 如果加载失败，显示默认符号
 				var fallback_label = Label.new()
 				fallback_label.text = "?"
-				fallback_label.add_theme_font_size_override("font_size", 24)
+				fallback_label.add_theme_font_size_override("font_size", 20)
+				fallback_label.set_anchors_preset(Control.PRESET_CENTER)
+				fallback_label.offset_left = -20  # 向左移动20像素
+				fallback_label.offset_top = -20  # 向上移动20像素
+				fallback_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 				item_container.add_child(fallback_label)
-				items_container.add_child(item_container)
-				displayed_items[item_id] = item_container
-				continue
-			
-			# 如果数量大于1，显示计数
-			if count > 1:
-				var count_label = Label.new()
-				count_label.text = "*%d" % count
-				count_label.add_theme_font_size_override("font_size", 16)
-				item_container.add_child(count_label)
-			
-			items_container.add_child(item_container)
-			displayed_items[item_id] = item_container
 		else:
 			# 如果是符号，显示为文本
-			var item_label = Label.new()
-			item_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-			item_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-			
-			# 如果数量大于1，显示 "图标*x"
-			if count > 1:
-				item_label.text = "%s*%d" % [icon, count]
-			else:
-				item_label.text = icon
-			
-			# 设置字体大小
-			item_label.add_theme_font_size_override("font_size", 24)
-			
-			items_container.add_child(item_label)
-			displayed_items[item_id] = item_label
+			var icon_label = Label.new()
+			icon_label.text = icon_path
+			icon_label.add_theme_font_size_override("font_size", 20)
+			icon_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+			icon_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+			icon_label.set_anchors_preset(Control.PRESET_FULL_RECT)
+			icon_label.offset_left = -20  # 向左移动20像素
+			icon_label.offset_top = -20  # 向上移动20像素
+			icon_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+			item_container.add_child(icon_label)
+		
+		# 如果数量大于1，在右下角显示计数
+		if count > 1:
+			var count_label = Label.new()
+			count_label.text = str(count)
+			count_label.add_theme_font_size_override("font_size", 14)
+			count_label.add_theme_color_override("font_color", Color(0, 0, 0))  # 黑色文本
+			count_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
+			count_label.vertical_alignment = VERTICAL_ALIGNMENT_BOTTOM
+			count_label.set_anchors_preset(Control.PRESET_FULL_RECT)
+			count_label.offset_left = 5
+			count_label.offset_top = 5
+			count_label.offset_right = -5
+			count_label.offset_bottom = -5
+			count_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+			item_container.add_child(count_label)
+		
+		# 添加到物品容器
+		items_container.add_child(item_container)
+		displayed_items[item_id] = item_container
 
 func _on_damage_numbers_toggled(button_pressed: bool):
 	ConfigManager.set_game_setting("show_damage_numbers", button_pressed)
