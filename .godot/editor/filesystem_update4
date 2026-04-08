@@ -1,2 +1,2 @@
-res://scripts/ui/game_ui.gd
+res://scripts/entities/enemies/enemy.gd
 res://scenes/ui/game_ui.tscn

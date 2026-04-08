@@ -10,6 +10,7 @@ var damage: int = 5
 var experience_value: int = 1
 var attack_type: String = "melee"
 var attack_range: float = 50.0
+var projectile_speed: float = 250.0
 var attack_speed: float = 1.0
 var attack_timer: float = 0.0
 var projectile_type: String = "normal"
@@ -17,6 +18,8 @@ var projectile_symbol: String = "•"
 var projectile_color: Color = Color.RED
 var split_distance: float = 150.0
 var split_count: int = 3
+var growth_index: float = 1.0
+var health_label: Label = null
 
 var target: Node2D = null
 
@@ -30,8 +33,31 @@ signal died(enemy)
 func _ready():
 	load_enemy_config()
 	setup_enemy()
+	create_health_label()
 	add_to_group("enemies")
 	GameManager.register_enemy(self)
+
+func create_health_label():
+	health_label = Label.new()
+	health_label.name = "HealthLabel"
+	health_label.add_theme_font_size_override("font_size", 12)
+	health_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	health_label.vertical_alignment = VERTICAL_ALIGNMENT_BOTTOM
+	health_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	update_health_label()
+	add_child(health_label)
+	
+	# 设置血量标签位置
+	var size = enemy_config.get("size", [0, 0])
+	var model_height = size[1]
+	if model_height == 0:
+		model_height = 40
+	health_label.position = Vector2(-50, -model_height - 10)
+	health_label.custom_minimum_size = Vector2(100, 20)
+
+func update_health_label():
+	if health_label:
+		health_label.text = "%d/%d" % [current_health, max_health]
 
 func load_enemy_config():
 	enemy_config = ConfigManager.get_monster(enemy_id)
@@ -40,25 +66,54 @@ func load_enemy_config():
 		return
 
 func setup_enemy():
-	# 计算增强系数 - 每3分钟增强一次
+	# 计算增强系数 - 使用增长指数，只在创建时计算一次
 	var game_time_minutes = GameManager.game_time / 60.0
-	var enhancement_multiplier = 1.0 + (game_time_minutes / 3.0) * 0.2
+	growth_index = enemy_config.get("growth_index", 1.0)
+	var enhancement_multiplier = 1.0 + (game_time_minutes / 3.0) * 0.2 * growth_index
 	
 	max_health = int(enemy_config.get("max_health", 20) * enhancement_multiplier)
 	current_health = max_health
-	speed = enemy_config.get("speed", 80) * (1.0 + (game_time_minutes / 3.0) * 0.1)
+	speed = enemy_config.get("speed", 80) * (1.0 + (game_time_minutes / 3.0) * 0.1 * growth_index)
 	damage = int(enemy_config.get("damage", 5) * enhancement_multiplier)
 	experience_value = int(enemy_config.get("experience", 1) * enhancement_multiplier)
 	attack_type = enemy_config.get("attack_type", "melee")
-	attack_range = enemy_config.get("attack_range", 50.0)
-	attack_speed = enemy_config.get("attack_speed", 1.0)
+	
+	# 设置攻击距离：近战使用默认值50.0，远程使用配置值
+	var config_attack_range = enemy_config.get("attack_range")
+	if config_attack_range == null:
+		attack_range = 50.0
+	else:
+		attack_range = config_attack_range
+	
+	# 设置弹道速度：只对远程有效
+	var config_projectile_speed = enemy_config.get("projectile_speed")
+	if config_projectile_speed == null:
+		projectile_speed = 250.0
+	else:
+		projectile_speed = config_projectile_speed
+	
+	var config_attack_speed = enemy_config.get("attack_speed")
+	if config_attack_speed == null:
+		attack_speed = 1.0
+	else:
+		attack_speed = config_attack_speed
 	attack_timer = 0.0
 	projectile_type = enemy_config.get("projectile_type", "normal")
 	projectile_symbol = enemy_config.get("projectile_symbol", "•")
-	var proj_color_str = enemy_config.get("projectile_color", "#ff0000")
+	var proj_color_str = enemy_config.get("projectile_color")
+	if proj_color_str == null:
+		proj_color_str = "#ff0000"
 	projectile_color = Color(proj_color_str)
-	split_distance = enemy_config.get("split_distance", 150.0)
-	split_count = enemy_config.get("split_count", 3)
+	var config_split_distance = enemy_config.get("split_distance")
+	if config_split_distance == null:
+		split_distance = 150.0
+	else:
+		split_distance = config_split_distance
+	var config_split_count = enemy_config.get("split_count")
+	if config_split_count == null:
+		split_count = 3
+	else:
+		split_count = config_split_count
 	
 	var symbol = enemy_config.get("symbol", "Z")
 	var color = Color(enemy_config.get("symbol_color", "#00ff00"))
@@ -226,7 +281,7 @@ func shoot_projectile():
 	# 设置属性
 	projectile.global_position = global_position
 	projectile.damage = damage
-	projectile.speed = 250.0
+	projectile.speed = projectile_speed
 	projectile.direction = direction
 	projectile.projectile_type = projectile_type
 	projectile.split_distance = split_distance
@@ -239,6 +294,9 @@ func shoot_projectile():
 
 func take_damage(amount: int):
 	current_health -= amount
+	
+	# 更新血量显示
+	update_health_label()
 	
 	# 显示伤害数值
 	show_damage_number(amount, false)

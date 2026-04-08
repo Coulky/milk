@@ -1,6 +1,18 @@
-[gd_scene load_steps=2 format=3 uid="uid://c2et0r98t749c"]
+[gd_scene load_steps=3 format=3 uid="uid://c2et0r98t749c"]
 
 [ext_resource type="Script" path="res://scripts/ui/game_ui.gd" id="1_gameui"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_1"]
+bg_color = Color(0.9, 0.9, 0.9, 0.2)
+border_color = Color(0.3, 0.6, 0.9, 1)
+border_width_left = 3
+border_width_top = 3
+border_width_right = 3
+border_width_bottom = 3
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_left = 10
+corner_radius_bottom_right = 10
 
 [node name="GameUI" type="CanvasLayer"]
 layer = 5
@@ -108,18 +120,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-
-[node name="StyleBoxFlat" type="StyleBoxFlat" parent="Inventory/PanelContainer"]
-bg_color = Color(0.9, 0.9, 0.9, 0.2)
-border_color = Color(0.3, 0.6, 0.9, 1)
-border_width_left = 3
-border_width_top = 3
-border_width_right = 3
-border_width_bottom = 3
-corner_radius_top_left = 10
-corner_radius_top_right = 10
-corner_radius_bottom_left = 10
-corner_radius_bottom_right = 10
+theme_override_styles/panel = SubResource("StyleBoxFlat_1")
 
 [node name="ItemsContainer" type="HBoxContainer" parent="Inventory/PanelContainer"]
 layout_mode = 1
