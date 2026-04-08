@@ -9,9 +9,9 @@ var player_scene = preload("res://scenes/entities/player.tscn")
 var player: CharacterBody2D = null
 
 # 暂停菜单对话框
-var pause_dialog: AcceptDialog
+var pause_dialog: Window
 # 死亡菜单对话框
-var death_dialog: AcceptDialog
+var death_dialog: Window
 
 func _ready():
 	GameManager.connect("level_up", _on_level_up)
@@ -24,70 +24,115 @@ func _ready():
 
 func create_pause_dialog():
 	# 创建暂停菜单对话框
-	pause_dialog = AcceptDialog.new()
+	pause_dialog = Window.new()
 	# 设置 process_mode 为 ALWAYS，确保在场景树暂停时仍能响应
 	pause_dialog.process_mode = Node.PROCESS_MODE_ALWAYS
 	pause_dialog.title = ConfigManager.get_language_text("pause_menu.title", "游戏暂停")
-	pause_dialog.min_size = Vector2(300, 200)
+	pause_dialog.min_size = Vector2(600, 400)
 	# 确保对话框居中
 	pause_dialog.unresizable = true
+	pause_dialog.size = Vector2(600, 400)  # 增加宽度
 	
-	# 清除默认的OK按钮
-	for child in pause_dialog.get_children():
-		if child is Button and child.text == "OK":
-			child.queue_free()
+	# 创建水平容器
+	var hbox = HBoxContainer.new()
+	hbox.name = "HBoxContainer"
+	hbox.process_mode = Node.PROCESS_MODE_ALWAYS
+	hbox.add_theme_constant_override("margin_left", 20)
+	hbox.add_theme_constant_override("margin_top", 20)
+	hbox.add_theme_constant_override("margin_right", 20)
+	hbox.add_theme_constant_override("margin_bottom", 20)
+	hbox.add_theme_constant_override("separation", 40)
+	hbox.size = Vector2(560, 360)  # 增加宽度和高度
+	pause_dialog.add_child(hbox)
 	
-	# 创建垂直容器
-	var vbox = VBoxContainer.new()
-	# 设置 process_mode 为 ALWAYS
-	vbox.process_mode = Node.PROCESS_MODE_ALWAYS
-	vbox.add_theme_constant_override("margin_left", 20)
-	vbox.add_theme_constant_override("margin_top", 20)
-	vbox.add_theme_constant_override("margin_right", 20)
-	vbox.add_theme_constant_override("margin_bottom", 20)
-	pause_dialog.add_child(vbox)
+	# 左侧：按钮区域
+	var left_vbox = VBoxContainer.new()
+	left_vbox.name = "LeftVBox"
+	left_vbox.process_mode = Node.PROCESS_MODE_ALWAYS
+	left_vbox.size_flags_horizontal = 0  # 禁用水平方向的自动调整
+	left_vbox.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	# 设置左侧按钮区域的固定宽度
+	left_vbox.size = Vector2(250, 360)  # 设置固定宽度为150
+	hbox.add_child(left_vbox)
 	
 	# 继续游戏按钮
 	var continue_button = Button.new()
-	# 设置 process_mode 为 ALWAYS
 	continue_button.process_mode = Node.PROCESS_MODE_ALWAYS
 	continue_button.text = ConfigManager.get_language_text("pause_menu.continue", "继续游戏")
 	continue_button.pressed.connect(func():
-		# 恢复游戏
 		GameManager.resume_game()
 		pause_dialog.hide()
 	)
-	vbox.add_child(continue_button)
+	left_vbox.add_child(continue_button)
 	
 	# 重新开始按钮
 	var restart_button = Button.new()
-	# 设置 process_mode 为 ALWAYS
 	restart_button.process_mode = Node.PROCESS_MODE_ALWAYS
 	restart_button.text = ConfigManager.get_language_text("pause_menu.restart", "重新开始")
 	restart_button.pressed.connect(func():
-		# 先恢复游戏，再切换场景
 		GameManager.resume_game()
 		GameManager.reset_game()
 		pause_dialog.hide()
-		# 跳转到角色选择界面
 		get_tree().change_scene_to_file("res://scenes/ui/character_select.tscn")
 	)
-	vbox.add_child(restart_button)
+	left_vbox.add_child(restart_button)
 	
 	# 退出按钮
 	var exit_button = Button.new()
-	# 设置 process_mode 为 ALWAYS
 	exit_button.process_mode = Node.PROCESS_MODE_ALWAYS
 	exit_button.text = ConfigManager.get_language_text("pause_menu.exit", "退出")
 	exit_button.pressed.connect(func():
-		# 先恢复游戏，再切换场景
 		GameManager.resume_game()
 		GameManager.reset_game()
 		pause_dialog.hide()
-		# 返回主菜单
 		get_tree().change_scene_to_file("res://scenes/ui/main_menu.tscn")
 	)
-	vbox.add_child(exit_button)
+	left_vbox.add_child(exit_button)
+	
+	# 右侧：角色属性区域
+	var right_vbox = VBoxContainer.new()
+	right_vbox.name = "RightVBox"
+	right_vbox.process_mode = Node.PROCESS_MODE_ALWAYS
+	right_vbox.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	right_vbox.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	right_vbox.add_theme_constant_override("separation", 5)
+	hbox.add_child(right_vbox)
+	
+	# 角色属性标题
+	var title_label = Label.new()
+	title_label.process_mode = Node.PROCESS_MODE_ALWAYS
+	title_label.text = ConfigManager.get_language_text("pause_menu.character_stats", "角色属性")
+	title_label.add_theme_font_size_override("font_size", 16)
+	title_label.add_theme_constant_override("margin_bottom", 5)
+	right_vbox.add_child(title_label)
+	
+	# 属性显示容器（使用 ScrollContainer 以防属性过多）
+	var scroll = ScrollContainer.new()
+	scroll.name = "ScrollContainer"
+	scroll.process_mode = Node.PROCESS_MODE_ALWAYS
+	scroll.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	scroll.add_theme_constant_override("margin_left", 2)
+	scroll.add_theme_constant_override("margin_top", 2)
+	scroll.add_theme_constant_override("margin_right", 2)
+	scroll.add_theme_constant_override("margin_bottom", 2)
+	right_vbox.add_child(scroll)
+	
+	var stats_vbox = VBoxContainer.new()
+	stats_vbox.name = "StatsVBox"
+	stats_vbox.process_mode = Node.PROCESS_MODE_ALWAYS
+	stats_vbox.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	stats_vbox.size_flags_vertical = Control.SIZE_EXPAND_FILL  # 确保垂直扩展
+	stats_vbox.add_theme_constant_override("separation", 2)  # 进一步减少属性之间的间距
+	# 添加蓝色背景
+	var stats_bg = ColorRect.new()
+	stats_bg.name = "Background"
+	stats_bg.color = Color(0, 0, 1, 0.2)  # 半透明蓝色背景
+	stats_bg.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	stats_bg.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	stats_bg.z_index = -1  # 确保背景在最底层
+	stats_vbox.add_child(stats_bg)
+	scroll.add_child(stats_vbox)
 	
 	# 添加ESC键关闭功能
 	pause_dialog.connect("close_requested", func():
@@ -101,18 +146,13 @@ func create_pause_dialog():
 
 func create_death_dialog():
 	# 创建死亡菜单对话框
-	death_dialog = AcceptDialog.new()
+	death_dialog = Window.new()
 	# 设置 process_mode 为 ALWAYS，确保在场景树暂停时仍能响应
 	death_dialog.process_mode = Node.PROCESS_MODE_ALWAYS
 	death_dialog.title = ConfigManager.get_language_text("death_menu.title", "你已经死亡")
 	death_dialog.min_size = Vector2(300, 150)
 	# 确保对话框居中
 	death_dialog.unresizable = true
-	
-	# 清除默认的OK按钮
-	for child in death_dialog.get_children():
-		if child is Button and child.text == "OK":
-			child.queue_free()
 	
 	# 创建垂直容器
 	var vbox = VBoxContainer.new()
@@ -302,12 +342,84 @@ func _input(event: InputEvent):
 func show_pause_menu():
 	# 暂停游戏
 	GameManager.pause_game()
+	# 更新角色属性显示
+	update_pause_menu_stats()
 	# 确保对话框居中
 	var viewport_size = Vector2(get_viewport_rect().size)
 	var dialog_size = Vector2(pause_dialog.min_size)
 	pause_dialog.position = (viewport_size - dialog_size) / 2
 	# 显示预创建的暂停菜单
 	pause_dialog.show()
+
+func update_pause_menu_stats():
+	# 获取属性显示容器
+	var scroll = pause_dialog.get_node_or_null("HBoxContainer/RightVBox/ScrollContainer")
+	if not scroll:
+		# 打印所有子节点来调试
+		print("Pause dialog children:", pause_dialog.get_children())
+		return
+	
+	var stats_vbox = scroll.get_node_or_null("StatsVBox")
+	if not stats_vbox:
+		# 打印滚动容器的子节点
+		print("Scroll container children:", scroll.get_children())
+		return
+	
+	# 清除旧的属性显示
+	for child in stats_vbox.get_children():
+		child.queue_free()
+	
+	# 获取玩家
+	var current_player = GameManager.get_player()
+	if not current_player:
+		return
+	
+	# 获取玩家的缓存属性
+	var cached_stats = current_player.get("cached_stats")
+	if not cached_stats:
+		return
+	
+	# 定义属性显示顺序
+	var stat_order = [
+		"max_health",
+		"health_regen",
+		"life_steal",
+		"damage",
+		"melee_damage",
+		"ranged_damage",
+		"elemental_damage",
+		"attack_speed",
+		"crit_chance",
+		"range",
+		"armor",
+		"evasion",
+		"speed",
+		"experience_gain",
+		"pickup_range",
+		"bounce_count",
+		"multiple_attack"
+	]
+	
+	# 显示每个属性
+	for stat_name in stat_order:
+		if cached_stats.has(stat_name):
+			var value = cached_stats[stat_name]
+			# 跳过null值的属性
+			if value == null:
+				continue
+			
+			var stat_label = Label.new()
+			stat_label.process_mode = Node.PROCESS_MODE_ALWAYS
+			stat_label.add_theme_font_size_override("font_size", 14)  # 增加字体大小
+			stat_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL  # 确保标签能够水平扩展
+			stat_label.clip_text = false  # 禁用文本裁剪
+			
+			# 获取属性名称的本地化文本
+			var stat_text = ConfigManager.get_language_text("item_attributes." + stat_name, stat_name)
+			stat_text = stat_text.replace("{value}", str(value))
+			
+			stat_label.text = stat_text
+			stats_vbox.add_child(stat_label)
 
 func show_death_menu():
 	# 暂停游戏

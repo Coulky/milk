@@ -1,2 +1,6 @@
 res://scripts/entities/enemies/enemy.gd
 res://scenes/ui/game_ui.tscn
+res://scripts/main.gd
+res://scripts/entities/player/player.gd
+res://scenes/ui/main_menu.tscn
+res://configs/characters.json

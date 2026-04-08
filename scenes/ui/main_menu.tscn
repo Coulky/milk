@@ -1,9 +1,9 @@
-[gd_scene load_steps=3 format=3 uid="uid://main_menu_scene"]
+[gd_scene format=3 uid="uid://c2jddasqvkx2f"]
 
-[ext_resource type="Script" path="res://scripts/ui/main_menu.gd" id="1_main_menu"]
-[ext_resource type="Texture2D" path="res://assets/images/backgrounds/main_menu_background.png" id="2_background"]
+[ext_resource type="Script" uid="uid://df61jd0ar50h4" path="res://scripts/ui/main_menu.gd" id="1_main_menu"]
+[ext_resource type="Texture2D" uid="uid://b0nlad1k137ws" path="res://assets/images/backgrounds/main_menu_background.png" id="2_background"]
 
-[node name="MainMenu" type="Control"]
+[node name="MainMenu" type="Control" unique_id=1868619306]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -12,8 +12,8 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_main_menu")
 
-[node name="Background" type="TextureRect" parent="."]
-anchors_preset = 15
+[node name="Background" type="TextureRect" parent="." unique_id=538338302]
+layout_mode = 0
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
@@ -21,27 +21,23 @@ grow_vertical = 2
 texture = ExtResource("2_background")
 stretch_mode = 4
 
-[node name="VBoxContainer" type="VBoxContainer" parent="."]
-layout_mode = 2
-anchors_preset = 1
-anchor_left = 0.0
+[node name="VBoxContainer" type="VBoxContainer" parent="." unique_id=964704399]
+layout_mode = 0
 anchor_top = 1.0
-anchor_right = 0.0
 anchor_bottom = 1.0
 offset_left = 300.0
 offset_top = -300.0
 offset_right = 600.0
-offset_bottom = 0.0
 
-[node name="StartButton" type="Button" parent="VBoxContainer"]
+[node name="StartButton" type="Button" parent="VBoxContainer" unique_id=1731657758]
 layout_mode = 2
 text = "开始游戏"
 
-[node name="SettingsButton" type="Button" parent="VBoxContainer"]
+[node name="SettingsButton" type="Button" parent="VBoxContainer" unique_id=518412665]
 layout_mode = 2
 text = "设置"
 
-[node name="QuitButton" type="Button" parent="VBoxContainer"]
+[node name="QuitButton" type="Button" parent="VBoxContainer" unique_id=1289143664]
 layout_mode = 2
 text = "退出"
 

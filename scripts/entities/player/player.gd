@@ -59,16 +59,26 @@ func load_character_config():
 		return
 
 func setup_character():
-	# 初始化缓存属性（从配置获取基础属性）
+	# 初始化缓存属性（从配置的stats对象获取基础属性）
+	var base_stats = character_config.get("stats", {})
 	cached_stats = {
-		"max_health": character_config.get("max_health", 100),
-		"speed": character_config.get("speed", 200.0),
-		"base_attack": character_config.get("attack", 10.0),
-		"defense": character_config.get("defense", 5.0),
-		"attack_speed": 0.0,
-		"crit_chance": 0.0,
-		"range": character_config.get("attack_range", 80.0),
-		"armor": 0.0
+		"max_health": base_stats.get("max_health", 100),
+		"health_regen": base_stats.get("health_regen", 0),
+		"life_steal": base_stats.get("life_steal", 0),
+		"damage": base_stats.get("damage", 10),
+		"melee_damage": base_stats.get("melee_damage", 0),
+		"ranged_damage": base_stats.get("ranged_damage", 0),
+		"elemental_damage": base_stats.get("elemental_damage", 0),
+		"attack_speed": base_stats.get("attack_speed", 100),
+		"crit_chance": base_stats.get("crit_chance", 0),
+		"range": base_stats.get("range", 80),
+		"armor": base_stats.get("armor", 0),
+		"evasion": base_stats.get("evasion", 0),
+		"speed": base_stats.get("speed", 200),
+		"experience_gain": base_stats.get("experience_gain", 100),
+		"pickup_range": base_stats.get("pickup_range", 100),
+		"bounce_count": base_stats.get("bounce_count", 0),
+		"bounce_damage": base_stats.get("bounce_damage", 0)
 	}
 	
 	# 应用缓存属性到实际属性
@@ -148,10 +158,10 @@ func setup_character():
 func apply_cached_stats():
 	max_health = cached_stats.get("max_health", 100)
 	speed = cached_stats.get("speed", 200.0)
-	base_attack = cached_stats.get("base_attack", 10.0)
-	defense = cached_stats.get("defense", 5.0)
-	attack_speed = cached_stats.get("attack_speed", 1.0)
-	attack_range = cached_stats.get("range", 80.0)
+	pickup_range = cached_stats.get("pickup_range", 100.0)
+	
+	# 更新拾取范围
+	update_pickup_area()
 	
 	# 更新血条
 	emit_signal("health_changed", current_health, max_health)
@@ -206,14 +216,14 @@ func map_stat_name(stat_name: String) -> String:
 		"max_health": return "max_health"
 		"health_regen": return "health_regen"
 		"life_steal": return "life_steal"
-		"damage": return "base_attack"
-		"melee_damage": return "base_attack"
-		"ranged_damage": return "base_attack"
-		"elemental_damage": return "base_attack"
+		"damage": return "damage"
+		"melee_damage": return "melee_damage"
+		"ranged_damage": return "ranged_damage"
+		"elemental_damage": return "elemental_damage"
 		"attack_speed": return "attack_speed"
 		"crit_chance": return "crit_chance"
 		"range": return "range"
-		"armor": return "defense"
+		"armor": return "armor"
 		"evasion": return "evasion"
 		"speed": return "speed"
 		"experience_gain": return "experience_gain"
@@ -388,17 +398,16 @@ func apply_buff(stat: String, value: float, _duration: float):
 		"speed":
 			speed *= (1.0 + value)
 		"defense":
-			defense *= (1.0 + value)
+			if cached_stats.has("armor"):
+				cached_stats["armor"] *= (1.0 + value)
 		"attack":
-			base_attack *= (1.0 + value)
+			if cached_stats.has("damage"):
+				cached_stats["damage"] *= (1.0 + value)
 		"attack_speed":
 			# 暂时不处理攻击速度
 			pass
 		"crit_chance":
 			# 暂时不处理暴击率
-			pass
-		"mana_regen":
-			# 暂时不处理魔法恢复
 			pass
 		"skill_damage":
 			# 暂时不处理技能伤害

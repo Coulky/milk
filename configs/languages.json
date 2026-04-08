@@ -27,7 +27,8 @@
         "title": "游戏暂停",
         "continue": "继续游戏",
         "restart": "重新开始",
-        "exit": "退出"
+        "exit": "退出",
+        "character_stats": "角色属性"
       },
       "death_menu": {
         "title": "你已经死亡",
@@ -67,7 +68,7 @@
         "experience_gain": "经验获取: {value}%",
         "pickup_range": "拾取范围: {value}",
         "bounce_count": "弹射次数: {value}",
-        "bounce_damage": "弹射伤害: {value}"
+        "multiple_attack": "多重攻击: {value}"
       }
     },
     "en": {
@@ -137,7 +138,7 @@
         "experience_gain": "Experience Gain: {value}%",
         "pickup_range": "Pickup Range: {value}",
         "bounce_count": "Bounce Count: {value}",
-        "bounce_damage": "Bounce Damage: {value}"
+        "multiple_attack": "Multiple Attack: {value}"
       }
     },
     "ja": {
@@ -207,7 +208,7 @@
         "experience_gain": "経験値獲得: {value}%",
         "pickup_range": "拾得範囲: {value}",
         "bounce_count": "跳ね返り回数: {value}",
-        "bounce_damage": "跳ね返りダメージ: {value}"
+        "multiple_attack": "多重攻撃: {value}"
       }
     }
   }
